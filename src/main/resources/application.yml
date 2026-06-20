@@ -43,8 +43,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: tradingapp.vishal@gmail.com
-    password: wfopwpkcznpaxvor
+    username: 
+    password: 
     properties:
       mail:
         smtp:
@@ -66,9 +66,9 @@ jwt:
 # SECURITY: same as above — this API secret was committed in plaintext. Rotate it
 # in your Cloudinary dashboard and override via CLOUDINARY_API_SECRET going forward.
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME:dwstpbouw}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
   api-key: ${CLOUDINARY_API_KEY:158833248977724}
-  api-secret: ${CLOUDINARY_API_SECRET:w_fZ3FppojTRFbPKXfDvkt9IVOE}
+  api-secret: ${CLOUDINARY_API_SECRET:}
   folder: restaurant-qr
 
 # ─── QR Code ──────────────────────────────────────────────────────────────────
