@@ -40,10 +40,10 @@
 - Verified that the Spring Boot application compiles and the Angular applications build.
 
 ### YYYY-MM-DD — Phase 0 Bootstrap
--Initialized Spring Boot project with Web, Security, Data JPA, Validation, MySQL, Flyway.
--Initialized Angular workspace with base folder structure per `Architecture.md`.
--Set up `application.yml` profiles (dev/staging/prod) with env-var placeholders.
--Exit criteria met: app boots, health check returns 200, Angular shell serves.
+- Initialized Spring Boot project with Web, Security, Data JPA, Validation, MySQL, Flyway.
+- Initialized Angular workspace with base folder structure per `Architecture.md`.
+- Set up `application.yml` profiles (dev/staging/prod) with env-var placeholders.
+- Exit criteria met: app boots, health check returns 200, Angular shell serves.
 
 ---
 
@@ -58,6 +58,8 @@ _(Record anything that differs from PRD/Architecture/Rules, and why.)_
 _(Things a future session would otherwise have to dig through code to find.)_
 
 - _Example: Bulk menu-item upload does not yet validate duplicate item names within the same category — flagged for Phase 4 follow-up._
+- **SECURITY ISSUE**: Public self-registration endpoint allows privilege escalation to RESTAURANT_OWNER role (Critical) - **ADDRESSED IN PLANNING PHASE**
+- **SECURITY ISSUE**: Cloudinary API key has default value that could be exposed (Medium) - **ADDRESSED IN PLANNING PHASE**
 
 ---
 
@@ -76,3 +78,8 @@ _(Things a future session would otherwise have to dig through code to find.)_
 _(One or two lines telling the next session exactly where to pick up.)_
 
 - Continue Phase 1 — verify that the Flyway migration applies successfully on startup, run the application to ensure tables are created, and columns, verify JPA repositories can perform basic CRUD operations.
+- Address security issues identified in P0 audit:
+  1. Fix critical vulnerability: Public self-registration allows privilege escalation to RESTAURANT_OWNER
+  2. Fix security issue: Remove default value for Cloudinary API key in application.yml
+
+---

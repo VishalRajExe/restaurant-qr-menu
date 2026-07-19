@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.UUID;
+
 @Slf4j
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class RestaurantQrApplication {
 
     /**
      * Seeds the default Super Admin account on first boot.
-     * Credentials: admin@restaurantqr.com / Admin@12345
+     * Credentials: admin@restaurantqr.com / (password from env ADMIN_PASSWORD or generated)
      * IMPORTANT: Change this password immediately after first login!
      */
     @Bean
@@ -30,20 +32,31 @@ public class RestaurantQrApplication {
             String superAdminEmail = "admin@restaurantqr.com";
 
             if (!userRepository.existsByEmailAndIsDeletedFalse(superAdminEmail)) {
+                String envPassword = System.getenv("ADMIN_PASSWORD");
+                String password;
+                boolean generated = false;
+                if (envPassword != null && !envPassword.isBlank()) {
+                    password = envPassword;
+                } else {
+                    password = UUID.randomUUID().toString();
+                    generated = true;
+                }
                 var admin = User.builder()
                         .name("Super Admin")
                         .email(superAdminEmail)
-                        .password(passwordEncoder.encode("Admin@12345"))
+                        .password(passwordEncoder.encode(password))
                         .role(User.Role.SUPER_ADMIN)
                         .status(User.Status.ACTIVE)
                         .build();
 
                 userRepository.save(admin);
-                log.warn("========================================================");
-                log.warn("  Super Admin seeded: {}", superAdminEmail);
-                log.warn("  Default password:   Admin@12345");
-                log.warn("  CHANGE THIS PASSWORD IMMEDIATELY AFTER FIRST LOGIN!");
-                log.warn("========================================================");
+                log.info("========================================================");
+                log.info("  Super Admin seeded: {}", superAdminEmail);
+                if (generated) {
+                    log.info("  Generated password: {}", password);
+                    log.info("  Please change the password after first login!");
+                }
+                log.info("========================================================");
             } else {
                 log.info("Super Admin already exists — skipping seed.");
             }

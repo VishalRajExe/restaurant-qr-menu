@@ -7,12 +7,11 @@ spring:
   application:
     name: restaurant-qr-backend
 
-  # ─── MySQL ───────────────────────────────────────────────────────────────────
+  # ─── Datasource ───────────────────────────────────────────────────────────────────
   datasource:
     url: ${DB_URL:jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
     username: ${DB_USERNAME:sa}
     password: ${DB_PASSWORD:}
-    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 20000
       maximum-pool-size: 10
@@ -57,8 +56,10 @@ spring:
     type: simple
 
 # ─── JWT ──────────────────────────────────────────────────────────────────────
+# SECURITY: do not use a default secret in production. Set JWT_SECRET environment variable
+# to a strong random value (minimum 32 characters recommended).
 jwt:
-  secret: ${JWT_SECRET:7A25432A462D4A614E645267556B58703273357638792F423F4528482B4D6251}
+  secret: ${JWT_SECRET}
   access-token-expiration: 86400000      # 1 day (ms)
   refresh-token-expiration: 604800000    # 7 days (ms)
 

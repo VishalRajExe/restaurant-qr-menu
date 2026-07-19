@@ -16,13 +16,22 @@ Each phase should be completed, tested, and checked into `Memory.md` before movi
 
 ---
 
-## Phase 1 — Database Design
+## Phase 1 — Database Design & Security Foundation
+**Status**: IN PROGRESS (Focusing on P0 Critical Security)
+
 - Create Flyway migrations for: `restaurant`, `branch`, `category`, `menu_item`, `offers`, `qr_codes`, `users`.
 - Add `created_at`, `updated_at`, `deleted_at` (soft delete) to every tenant table.
 - Add foreign keys and indexes (`restaurant_id`, `branch_id`, `category_id`).
 - Create JPA entities + repositories matching the schema.
 
-**Exit criteria:** All tables created via migration (not manual SQL), entities map cleanly, repositories pass basic save/find tests.
+**Additional Security Focus (P0 Critical):**
+- [ ] Fix critical vulnerability: Public self-registration allows privilege escalation to RESTAURANT_OWNER
+- [ ] Fix security issue: Remove default value for Cloudinary API key in application.yml
+- [ ] Implement comprehensive input validation across all endpoints
+- [ ] Add security headers (CSP, HSTS, etc.) via web filter
+- [ ] Implement rate limiting on authentication endpoints
+
+**Exit criteria:** All tables created via migration (not manual SQL), entities map cleanly, repositories pass basic save/find tests. All P0 security issues resolved. Application builds, starts, and passes basic security validation.
 
 ---
 
@@ -77,7 +86,7 @@ Each phase should be completed, tested, and checked into `Memory.md` before movi
 ## Phase 7 — Offers Module
 - Offers CRUD (title, description, discount, start/end date) scoped to restaurant.
 - Display active offers on the public menu (date-range aware).
-- Angular: offers management UI (admin) + offers banner (public menu).
+- Angular: odds management UI (admin) + offers banner (public menu).
 
 **Exit criteria:** Only currently-active offers show on the public menu; expired/future offers are hidden automatically.
 

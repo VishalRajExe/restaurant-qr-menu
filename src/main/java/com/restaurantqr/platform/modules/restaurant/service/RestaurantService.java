@@ -6,10 +6,14 @@ import com.restaurantqr.platform.modules.menuitem.repository.MenuItemRepository;
 import com.restaurantqr.platform.modules.restaurant.entity.Restaurant;
 import com.restaurantqr.platform.modules.restaurant.repository.RestaurantRepository;
 import com.restaurantqr.platform.modules.subscription.repository.SubscriptionRepository;
+import com.restaurantqr.platform.security.JwtUserDetails;
+import com.restaurantqr.platform.users.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,29 +24,31 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class RestaurantService {
 
-    private final RestaurantRepository restaurantRepository;
+    private final RestaurantRepository repository;
     private final BranchRepository branchRepository;
     private final MenuItemRepository menuItemRepository;
     private final SubscriptionRepository subscriptionRepository;
 
     public Restaurant findById(Long id) {
-        return restaurantRepository.findById(id)
+        Restaurant restaurant = repository.findById(id)
                 .filter(r -> !r.getIsDeleted())
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", id));
+        assertRestaurantAccess(id);
+        return restaurant;
     }
 
     public Restaurant findBySlug(String slug) {
-        return restaurantRepository.findBySlugAndIsDeletedFalse(slug)
+        return repository.findBySlugAndIsDeletedFalse(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found: " + slug));
     }
 
     public Page<Restaurant> findAll(String search, Pageable pageable) {
-        return restaurantRepository.findAllActive(search, pageable);
+        return repository.findAllActive(search, pageable);
     }
 
     @Transactional
     public Restaurant create(RestaurantRequest request) {
-        if (restaurantRepository.existsBySlugAndIsDeletedFalse(request.slug)) {
+        if (repository.existsBySlugAndIsDeletedFalse(request.slug)) {
             throw new ConflictException("A restaurant with this slug already exists: " + request.slug);
         }
 
@@ -59,7 +65,7 @@ public class RestaurantService {
                 .primaryColor(request.primaryColor != null ? request.primaryColor : "#FF6B35")
                 .build();
 
-        return restaurantRepository.save(restaurant);
+        return repository.save(restaurant);
     }
 
     @Transactional
@@ -67,7 +73,7 @@ public class RestaurantService {
         var restaurant = findById(id);
 
         if (!restaurant.getSlug().equals(request.slug)
-                && restaurantRepository.existsBySlugAndIsDeletedFalse(request.slug)) {
+                && repository.existsBySlugAndIsDeletedFalse(request.slug)) {
             throw new ConflictException("Slug already in use");
         }
 
@@ -82,14 +88,14 @@ public class RestaurantService {
         restaurant.setWebsiteUrl(request.websiteUrl);
         if (request.primaryColor != null) restaurant.setPrimaryColor(request.primaryColor);
 
-        return restaurantRepository.save(restaurant);
+        return repository.save(restaurant);
     }
 
     @Transactional
     public void delete(Long id) {
         var restaurant = findById(id);
         restaurant.softDelete();
-        restaurantRepository.save(restaurant);
+        repository.save(restaurant);
         log.info("Restaurant soft-deleted: id={}", id);
     }
 
@@ -114,6 +120,39 @@ public class RestaurantService {
             long count = menuItemRepository.countByRestaurantIdAndIsDeletedFalse(restaurantId);
             if (count >= 100) throw new SubscriptionLimitException(
                     "Your BASIC plan allows 100 menu items. Upgrade to Professional for unlimited.");
+        }
+    }
+
+    // ─── Access Control ───────────────────────────────────────────────────────
+
+    /**
+     * Ensures the currently authenticated user can access the given restaurant.
+     * Allows access if the user is SUPER_ADMIN or if the restaurantId matches the user's restaurant.
+     * Throws ForbiddenException otherwise.
+     */
+    private void assertRestaurantAccess(Long restaurantId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new ForbiddenException("Unauthenticated");
+        }
+
+        Object principal = auth.getPrincipal();
+        Long userRestaurantId = null;
+        boolean isSuperAdmin = false;
+
+        if (principal instanceof JwtUserDetails userDetails) {
+            userRestaurantId = userDetails.getRestaurantId();
+            isSuperAdmin = "SUPER_ADMIN".equals(userDetails.getRole());
+        } else if (principal instanceof User user) {
+            userRestaurantId = user.getRestaurant() != null ? user.getRestaurant().getId() : null;
+            isSuperAdmin = user.getRole() == User.Role.SUPER_ADMIN;
+        }
+        // Fallback: treat as no restaurant if principal type unknown
+        if (userRestaurantId == null && !isSuperAdmin) {
+            throw new ForbiddenException("Access denied: user has no restaurant association");
+        }
+        if (!isSuperAdmin && !restaurantId.equals(userRestaurantId)) {
+            throw new ForbiddenException("Access denied to restaurant " + restaurantId);
         }
     }
 }
