@@ -13,7 +13,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.restaurantqr</groupId>
+    <groupId>com.restaurantqr.platform</groupId>
     <artifactId>restaurant-qr-backend</artifactId>
     <version>1.0.0</version>
     <name>Restaurant QR Menu SaaS</name>
@@ -147,19 +147,19 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
 
     </dependencies>

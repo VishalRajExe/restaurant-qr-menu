@@ -8,30 +8,42 @@
 1. After completing a task, unit of work, or phase, append an entry to **Progress Log**.
 2. Update **Current State** to reflect what's true *right now* (not historical).
 3. Record any **Decisions & Deviations** from `PRD.md` / `Architecture.md` / `Rules.md` — including why.
-4. Record **Known Issues / TODOs** so nothing is silently forgotten.
+4. Record any **Known Issues / TODOs** so nothing is silently forgotten.
 5. Keep entries short and factual — this file is for machine context, not prose.
 
 ---
 
 ## Current State (update in place, don't append)
 
-**Last updated:** _(date)_
-**Current phase:** _(e.g., Phase 3 — Restaurant & Branch Management)_
-**Backend status:** _(e.g., builds clean, X endpoints implemented, Y tests passing)_
-**Frontend status:** _(e.g., admin shell + auth pages done, menu CRUD in progress)_
-**Database status:** _(last migration version, e.g., V6__add_offers_table.sql)_
-**Environment:** _(dev only / dev+staging / deployed to prod)_
+**Last updated:** _2026-07-20_
+**Current phase:** _Phase 1 — Database Design (in progress)_
+**Backend status:** _Spring Boot application builds successfully, Angular workspace created and both applications build successfully_
+**Frontend status:** _Angular workspace with two applications (public-menu and admin) created and built successfully_
+**Database status:** _H2 in-memory database used for development (schema defined via Flyway migration)_
+**Environment:** _Development (H2)_
 
 ---
 
 ## Progress Log
-_(Append new entries at the top, most recent first. One entry per session/phase.)_
+### 2026-07-20 — Phase 1 — Database Design (in progress)
+- Created initial Flyway migration V1__init.sql with tables: restaurant, branch, category, menu_item, offers, qr_codes, users, scan_events.
+- Added audit columns (created_at, updated_at, deleted_at, is_deleted) to all tables.
+- Added foreign keys and indexes for tenant scoping (restaurant_id, branch_id, category_id).
+- Verified that JPA entities and repositories already exist.
+
+### 2026-07-20 — Phase 0 Bootstrap
+- Restructured backend package structure to match Architecture.md (com.restaurantqr.platform).
+- Updated all import statements accordingly.
+- Created Angular workspace with two applications: public-menu and admin.
+- Built both Angular applications successfully.
+- Updated configuration to use H2 in-memory database for development.
+- Verified that the Spring Boot application compiles and the Angular applications build.
 
 ### YYYY-MM-DD — Phase 0 Bootstrap
-- Initialized Spring Boot project with Web, Security, Data JPA, Validation, MySQL, Flyway.
-- Initialized Angular workspace with base folder structure per `Architecture.md`.
-- Set up `application.yml` profiles (dev/staging/prod) with env-var placeholders.
-- Exit criteria met: app boots, health check returns 200, Angular shell serves.
+-Initialized Spring Boot project with Web, Security, Data JPA, Validation, MySQL, Flyway.
+-Initialized Angular workspace with base folder structure per `Architecture.md`.
+-Set up `application.yml` profiles (dev/staging/prod) with env-var placeholders.
+-Exit criteria met: app boots, health check returns 200, Angular shell serves.
 
 ---
 
@@ -43,6 +55,8 @@ _(Record anything that differs from PRD/Architecture/Rules, and why.)_
 ---
 
 ## Known Issues / Open TODOs
+_(Things a future session would otherwise have to dig through code to find.)_
+
 - _Example: Bulk menu-item upload does not yet validate duplicate item names within the same category — flagged for Phase 4 follow-up._
 
 ---
@@ -53,7 +67,7 @@ _(Things a future session would otherwise have to dig through code to find.)_
 - JWT access token TTL: _(e.g., 15 min)_ / refresh token TTL: _(e.g., 7 days)_
 - Roles in use: `SUPER_ADMIN`, `RESTAURANT_OWNER`, `MANAGER`, `STAFF`
 - Public menu URL pattern: `https://menu.yourdomain.com/menu/{slug}`
-- Current Flyway migration head: _(e.g., V6)_
+- Current Flyway migration head: _(e.g., V1)_
 - Payment providers wired: _(e.g., Razorpay sandbox only, PayPal not yet started)_
 
 ---
@@ -61,4 +75,4 @@ _(Things a future session would otherwise have to dig through code to find.)_
 ## Next Session Should Start With
 _(One or two lines telling the next session exactly where to pick up.)_
 
-- _Example: Continue Phase 4 — menu item bulk upload endpoint is scaffolded but CSV row-level error reporting is not implemented yet (see Known Issues)._
+- Continue Phase 1 — verify that the Flyway migration applies successfully on startup, run the application to ensure tables are created, and columns, verify JPA repositories can perform basic CRUD operations.
