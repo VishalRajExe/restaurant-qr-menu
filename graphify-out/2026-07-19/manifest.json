@@ -1,0 +1,387 @@
+{
+  ".claude/settings.local.json": {
+    "mtime": 1784482435.3876555,
+    "ast_hash": "c23c32519e5bba45b3d0a1e7a289864a",
+    "semantic_hash": "c23c32519e5bba45b3d0a1e7a289864a"
+  },
+  "pom.xml": {
+    "mtime": 1784481234.51768,
+    "ast_hash": "765254aedb8cbb9cd093bb74ea7dc245",
+    "semantic_hash": "765254aedb8cbb9cd093bb74ea7dc245"
+  },
+  "src/main/java/com/restaurantqr/RestaurantQrApplication.java": {
+    "mtime": 1784481234.5197647,
+    "ast_hash": "a03d8ea6a043b4d1931ed20494f1bdd0",
+    "semantic_hash": "a03d8ea6a043b4d1931ed20494f1bdd0"
+  },
+  "src/main/java/com/restaurantqr/common/ApiResponse.java": {
+    "mtime": 1784481234.5207663,
+    "ast_hash": "809d0d292e3369be4dd8d77a533a6781",
+    "semantic_hash": "809d0d292e3369be4dd8d77a533a6781"
+  },
+  "src/main/java/com/restaurantqr/common/BadRequestException.java": {
+    "mtime": 1784481234.5207663,
+    "ast_hash": "51a602719b5213ee01a22bc53adf2b81",
+    "semantic_hash": "51a602719b5213ee01a22bc53adf2b81"
+  },
+  "src/main/java/com/restaurantqr/common/BaseEntity.java": {
+    "mtime": 1784481234.5217667,
+    "ast_hash": "4db3f28560dc16951e8c77136b576f8f",
+    "semantic_hash": "4db3f28560dc16951e8c77136b576f8f"
+  },
+  "src/main/java/com/restaurantqr/common/ConflictException.java": {
+    "mtime": 1784481234.5217667,
+    "ast_hash": "f05095996a427b6cafd3e328fdd52f76",
+    "semantic_hash": "f05095996a427b6cafd3e328fdd52f76"
+  },
+  "src/main/java/com/restaurantqr/common/ForbiddenException.java": {
+    "mtime": 1784481234.5217667,
+    "ast_hash": "72a5d112db17978d7ee0d16c5618cc0b",
+    "semantic_hash": "72a5d112db17978d7ee0d16c5618cc0b"
+  },
+  "src/main/java/com/restaurantqr/common/GlobalExceptionHandler.java": {
+    "mtime": 1784481234.5227659,
+    "ast_hash": "545a9540479bb08e391e1c5374868bbd",
+    "semantic_hash": "545a9540479bb08e391e1c5374868bbd"
+  },
+  "src/main/java/com/restaurantqr/common/ResourceNotFoundException.java": {
+    "mtime": 1784481234.5227659,
+    "ast_hash": "5f2f749122aad6626938aef87c1650c6",
+    "semantic_hash": "5f2f749122aad6626938aef87c1650c6"
+  },
+  "src/main/java/com/restaurantqr/common/SubscriptionLimitException.java": {
+    "mtime": 1784481234.5237758,
+    "ast_hash": "80cb98243a8779a735a4cc3c6cc6778e",
+    "semantic_hash": "80cb98243a8779a735a4cc3c6cc6778e"
+  },
+  "src/main/java/com/restaurantqr/config/AppConfig.java": {
+    "mtime": 1784481234.5247824,
+    "ast_hash": "d1829526ca7e9559d6174959ae435fbe",
+    "semantic_hash": "d1829526ca7e9559d6174959ae435fbe"
+  },
+  "src/main/java/com/restaurantqr/config/CloudinaryConfig.java": {
+    "mtime": 1784481234.5247824,
+    "ast_hash": "9e758cf90a8bb3ae4dd3bdea7c5ff3ba",
+    "semantic_hash": "9e758cf90a8bb3ae4dd3bdea7c5ff3ba"
+  },
+  "src/main/java/com/restaurantqr/config/CloudinaryUploadService.java": {
+    "mtime": 1784481234.5247824,
+    "ast_hash": "cddb00a0be158d14851c8b7d0eaa4143",
+    "semantic_hash": "cddb00a0be158d14851c8b7d0eaa4143"
+  },
+  "src/main/java/com/restaurantqr/config/EmailService.java": {
+    "mtime": 1784481234.5257697,
+    "ast_hash": "5cc5f36fd8a63c10ab75e9aa9edf474b",
+    "semantic_hash": "5cc5f36fd8a63c10ab75e9aa9edf474b"
+  },
+  "src/main/java/com/restaurantqr/config/RateLimitFilter.java": {
+    "mtime": 1784481234.5257697,
+    "ast_hash": "f102e3c15f7534b4f040998988f40c7d",
+    "semantic_hash": "f102e3c15f7534b4f040998988f40c7d"
+  },
+  "src/main/java/com/restaurantqr/config/ScheduledTasks.java": {
+    "mtime": 1784481234.5257697,
+    "ast_hash": "697ceafe50af30662ee804f160bfba84",
+    "semantic_hash": "697ceafe50af30662ee804f160bfba84"
+  },
+  "src/main/java/com/restaurantqr/config/SecurityConfig.java": {
+    "mtime": 1784481234.52677,
+    "ast_hash": "b9b6bc05f81b869357c31bbf551a033c",
+    "semantic_hash": "b9b6bc05f81b869357c31bbf551a033c"
+  },
+  "src/main/java/com/restaurantqr/modules/analytics/controller/AnalyticsController.java": {
+    "mtime": 1784481234.52677,
+    "ast_hash": "eadd4ece05297de033807a7833c41a42",
+    "semantic_hash": "eadd4ece05297de033807a7833c41a42"
+  },
+  "src/main/java/com/restaurantqr/modules/analytics/entity/ScanEvent.java": {
+    "mtime": 1784481234.527763,
+    "ast_hash": "8d87821502d0c89c41054e779ea3f8ff",
+    "semantic_hash": "8d87821502d0c89c41054e779ea3f8ff"
+  },
+  "src/main/java/com/restaurantqr/modules/analytics/repository/ScanEventRepository.java": {
+    "mtime": 1784481234.528765,
+    "ast_hash": "e779cba7c0155d18b1d76e0b3c27fb44",
+    "semantic_hash": "e779cba7c0155d18b1d76e0b3c27fb44"
+  },
+  "src/main/java/com/restaurantqr/modules/analytics/service/AnalyticsService.java": {
+    "mtime": 1784481234.528765,
+    "ast_hash": "b12fba222e192d03d5c85bc4b3c0131f",
+    "semantic_hash": "b12fba222e192d03d5c85bc4b3c0131f"
+  },
+  "src/main/java/com/restaurantqr/modules/auth/AuthController.java": {
+    "mtime": 1784481234.5297642,
+    "ast_hash": "08b398b7846ce86e1a928a221456cc0c",
+    "semantic_hash": "08b398b7846ce86e1a928a221456cc0c"
+  },
+  "src/main/java/com/restaurantqr/modules/auth/AuthDtos.java": {
+    "mtime": 1784481234.5297642,
+    "ast_hash": "ec45d2df33c5afd5464019cf233c5ea4",
+    "semantic_hash": "ec45d2df33c5afd5464019cf233c5ea4"
+  },
+  "src/main/java/com/restaurantqr/modules/auth/AuthService.java": {
+    "mtime": 1784481234.5307643,
+    "ast_hash": "39b7064e244ae0e33e6e7dfcf0550100",
+    "semantic_hash": "39b7064e244ae0e33e6e7dfcf0550100"
+  },
+  "src/main/java/com/restaurantqr/modules/auth/CustomUserDetailsService.java": {
+    "mtime": 1784481234.5307643,
+    "ast_hash": "d71bdbdb6707850db68f171553b8f3d6",
+    "semantic_hash": "d71bdbdb6707850db68f171553b8f3d6"
+  },
+  "src/main/java/com/restaurantqr/modules/branch/controller/BranchController.java": {
+    "mtime": 1784481234.531765,
+    "ast_hash": "ff6e2c1d38288d4f8065a12075c425d5",
+    "semantic_hash": "ff6e2c1d38288d4f8065a12075c425d5"
+  },
+  "src/main/java/com/restaurantqr/modules/branch/entity/Branch.java": {
+    "mtime": 1784481234.531765,
+    "ast_hash": "1590ca2e6f99def51cc2cb2995410b4e",
+    "semantic_hash": "1590ca2e6f99def51cc2cb2995410b4e"
+  },
+  "src/main/java/com/restaurantqr/modules/branch/repository/BranchRepository.java": {
+    "mtime": 1784481234.5327642,
+    "ast_hash": "e4fc288dce9110dd717c6cfd7a0ea929",
+    "semantic_hash": "e4fc288dce9110dd717c6cfd7a0ea929"
+  },
+  "src/main/java/com/restaurantqr/modules/branch/service/BranchRequest.java": {
+    "mtime": 1784481234.5332706,
+    "ast_hash": "68c4dcf352e258526af92b82b26dad9d",
+    "semantic_hash": "68c4dcf352e258526af92b82b26dad9d"
+  },
+  "src/main/java/com/restaurantqr/modules/branch/service/BranchService.java": {
+    "mtime": 1784481234.5332706,
+    "ast_hash": "718821900daf0031f9552330bed85eb8",
+    "semantic_hash": "718821900daf0031f9552330bed85eb8"
+  },
+  "src/main/java/com/restaurantqr/modules/category/controller/CategoryController.java": {
+    "mtime": 1784481234.533776,
+    "ast_hash": "4607de1fdebd7966e1d2c498236700d2",
+    "semantic_hash": "4607de1fdebd7966e1d2c498236700d2"
+  },
+  "src/main/java/com/restaurantqr/modules/category/entity/Category.java": {
+    "mtime": 1784481234.533776,
+    "ast_hash": "99647e9512bd80da92c6354b3748c025",
+    "semantic_hash": "99647e9512bd80da92c6354b3748c025"
+  },
+  "src/main/java/com/restaurantqr/modules/category/repository/CategoryRepository.java": {
+    "mtime": 1784481234.5347831,
+    "ast_hash": "d8eb0c619ddbd2654e35c4e3c330e39c",
+    "semantic_hash": "d8eb0c619ddbd2654e35c4e3c330e39c"
+  },
+  "src/main/java/com/restaurantqr/modules/category/service/CategoryRequest.java": {
+    "mtime": 1784481234.5347831,
+    "ast_hash": "de2895751b501b64083d6133e9677ec0",
+    "semantic_hash": "de2895751b501b64083d6133e9677ec0"
+  },
+  "src/main/java/com/restaurantqr/modules/category/service/CategoryService.java": {
+    "mtime": 1784481234.5347831,
+    "ast_hash": "c9a0d3be55c101dce097614a6e31d1de",
+    "semantic_hash": "c9a0d3be55c101dce097614a6e31d1de"
+  },
+  "src/main/java/com/restaurantqr/modules/category/service/ReorderItem.java": {
+    "mtime": 1784481234.5357833,
+    "ast_hash": "39f4bbe23fc7b25f49dae6a34899da2d",
+    "semantic_hash": "39f4bbe23fc7b25f49dae6a34899da2d"
+  },
+  "src/main/java/com/restaurantqr/modules/menuitem/controller/ImageUploadController.java": {
+    "mtime": 1784481234.5357833,
+    "ast_hash": "72e6589f62079647fb423874b94ac17e",
+    "semantic_hash": "72e6589f62079647fb423874b94ac17e"
+  },
+  "src/main/java/com/restaurantqr/modules/menuitem/controller/MenuItemController.java": {
+    "mtime": 1784481234.5357833,
+    "ast_hash": "66dcb07ec579e7d103621f684d565f00",
+    "semantic_hash": "66dcb07ec579e7d103621f684d565f00"
+  },
+  "src/main/java/com/restaurantqr/modules/menuitem/entity/MenuItem.java": {
+    "mtime": 1784481234.5367823,
+    "ast_hash": "760518c6e51839720e5f3d539cf7e6fb",
+    "semantic_hash": "760518c6e51839720e5f3d539cf7e6fb"
+  },
+  "src/main/java/com/restaurantqr/modules/menuitem/repository/MenuItemRepository.java": {
+    "mtime": 1784481234.5367823,
+    "ast_hash": "3a93de3f54f99cf3410836869b6dfc6e",
+    "semantic_hash": "3a93de3f54f99cf3410836869b6dfc6e"
+  },
+  "src/main/java/com/restaurantqr/modules/menuitem/service/MenuItemRequest.java": {
+    "mtime": 1784481234.5377839,
+    "ast_hash": "9de117b4dd3577093808a14f81d6088b",
+    "semantic_hash": "9de117b4dd3577093808a14f81d6088b"
+  },
+  "src/main/java/com/restaurantqr/modules/menuitem/service/MenuItemService.java": {
+    "mtime": 1784481234.5377839,
+    "ast_hash": "c6f68447fad8d57d69cb23d13ff065d9",
+    "semantic_hash": "c6f68447fad8d57d69cb23d13ff065d9"
+  },
+  "src/main/java/com/restaurantqr/modules/offer/controller/OfferController.java": {
+    "mtime": 1784481234.5387826,
+    "ast_hash": "60596c43891e702d0d4d750438ae5e4f",
+    "semantic_hash": "60596c43891e702d0d4d750438ae5e4f"
+  },
+  "src/main/java/com/restaurantqr/modules/offer/entity/Offer.java": {
+    "mtime": 1784481234.5387826,
+    "ast_hash": "1f44258b2c57ac0e8bbb7ba1c965a6be",
+    "semantic_hash": "1f44258b2c57ac0e8bbb7ba1c965a6be"
+  },
+  "src/main/java/com/restaurantqr/modules/offer/repository/OfferRepository.java": {
+    "mtime": 1784481234.539783,
+    "ast_hash": "512293417e85733e03e8d4665f586db9",
+    "semantic_hash": "512293417e85733e03e8d4665f586db9"
+  },
+  "src/main/java/com/restaurantqr/modules/offer/service/OfferRequest.java": {
+    "mtime": 1784481234.539783,
+    "ast_hash": "8d21ff9efffdc32c576616171ae742f8",
+    "semantic_hash": "8d21ff9efffdc32c576616171ae742f8"
+  },
+  "src/main/java/com/restaurantqr/modules/offer/service/OfferService.java": {
+    "mtime": 1784481234.539783,
+    "ast_hash": "9b8e7ae1719a008183b1a342e1be2af3",
+    "semantic_hash": "9b8e7ae1719a008183b1a342e1be2af3"
+  },
+  "src/main/java/com/restaurantqr/modules/qr/controller/QrCodeController.java": {
+    "mtime": 1784481234.5407815,
+    "ast_hash": "9792424d15b87176f282cc7f18e34dad",
+    "semantic_hash": "9792424d15b87176f282cc7f18e34dad"
+  },
+  "src/main/java/com/restaurantqr/modules/qr/entity/QrCode.java": {
+    "mtime": 1784481234.5417838,
+    "ast_hash": "e55fffa35802eb3fd6024a44ae69bebb",
+    "semantic_hash": "e55fffa35802eb3fd6024a44ae69bebb"
+  },
+  "src/main/java/com/restaurantqr/modules/qr/repository/QrCodeRepository.java": {
+    "mtime": 1784481234.5417838,
+    "ast_hash": "6156653f84195b5fa246372b9f0b0797",
+    "semantic_hash": "6156653f84195b5fa246372b9f0b0797"
+  },
+  "src/main/java/com/restaurantqr/modules/qr/service/QrCodeRequest.java": {
+    "mtime": 1784481234.5417838,
+    "ast_hash": "79d7497b57e60accd66284c97a12a565",
+    "semantic_hash": "79d7497b57e60accd66284c97a12a565"
+  },
+  "src/main/java/com/restaurantqr/modules/qr/service/QrCodeService.java": {
+    "mtime": 1784481234.5427816,
+    "ast_hash": "4422e5a0063d9d670ef87d7d54f1c173",
+    "semantic_hash": "4422e5a0063d9d670ef87d7d54f1c173"
+  },
+  "src/main/java/com/restaurantqr/modules/restaurant/controller/PublicMenuController.java": {
+    "mtime": 1784481234.5427816,
+    "ast_hash": "3da9bcfc9a943953bb32de5af41c8bb3",
+    "semantic_hash": "3da9bcfc9a943953bb32de5af41c8bb3"
+  },
+  "src/main/java/com/restaurantqr/modules/restaurant/controller/RestaurantController.java": {
+    "mtime": 1784481234.5427816,
+    "ast_hash": "7d0d2c53b1e27d3a7a7edb6eef99ceef",
+    "semantic_hash": "7d0d2c53b1e27d3a7a7edb6eef99ceef"
+  },
+  "src/main/java/com/restaurantqr/modules/restaurant/controller/SuperAdminController.java": {
+    "mtime": 1784481234.543781,
+    "ast_hash": "377bdaed403c5dd34951fbd5b5227918",
+    "semantic_hash": "377bdaed403c5dd34951fbd5b5227918"
+  },
+  "src/main/java/com/restaurantqr/modules/restaurant/entity/Restaurant.java": {
+    "mtime": 1784481234.543781,
+    "ast_hash": "c9a306bed6eecf1d1d1c32ac54bebd2c",
+    "semantic_hash": "c9a306bed6eecf1d1d1c32ac54bebd2c"
+  },
+  "src/main/java/com/restaurantqr/modules/restaurant/repository/RestaurantRepository.java": {
+    "mtime": 1784481234.544781,
+    "ast_hash": "880e4fc6bde91633b2b8b63fed1fa24b",
+    "semantic_hash": "880e4fc6bde91633b2b8b63fed1fa24b"
+  },
+  "src/main/java/com/restaurantqr/modules/restaurant/service/RestaurantRequest.java": {
+    "mtime": 1784481234.544781,
+    "ast_hash": "6ef57ec89376114f423a6f6067dd991d",
+    "semantic_hash": "6ef57ec89376114f423a6f6067dd991d"
+  },
+  "src/main/java/com/restaurantqr/modules/restaurant/service/RestaurantService.java": {
+    "mtime": 1784481234.544781,
+    "ast_hash": "32be573c5ffde2247ab0e83eaff4790d",
+    "semantic_hash": "32be573c5ffde2247ab0e83eaff4790d"
+  },
+  "src/main/java/com/restaurantqr/modules/subscription/controller/SubscriptionController.java": {
+    "mtime": 1784481234.5457892,
+    "ast_hash": "d9b2e7d944de3dbae011d4599e4bfc03",
+    "semantic_hash": "d9b2e7d944de3dbae011d4599e4bfc03"
+  },
+  "src/main/java/com/restaurantqr/modules/subscription/entity/Subscription.java": {
+    "mtime": 1784481234.5457892,
+    "ast_hash": "3c140f9b9c877555d3d6be07aee4e846",
+    "semantic_hash": "3c140f9b9c877555d3d6be07aee4e846"
+  },
+  "src/main/java/com/restaurantqr/modules/subscription/repository/SubscriptionRepository.java": {
+    "mtime": 1784481234.5467815,
+    "ast_hash": "8ce10340bdf190c1777402118638ba54",
+    "semantic_hash": "8ce10340bdf190c1777402118638ba54"
+  },
+  "src/main/java/com/restaurantqr/modules/subscription/service/SubscriptionRequest.java": {
+    "mtime": 1784481234.5477831,
+    "ast_hash": "0e15d0f8438a024c7e51cb0743d5d4fb",
+    "semantic_hash": "0e15d0f8438a024c7e51cb0743d5d4fb"
+  },
+  "src/main/java/com/restaurantqr/modules/subscription/service/SubscriptionService.java": {
+    "mtime": 1784481234.5477831,
+    "ast_hash": "44c5bbd78aac11c12f9262cf1655d9fe",
+    "semantic_hash": "44c5bbd78aac11c12f9262cf1655d9fe"
+  },
+  "src/main/java/com/restaurantqr/modules/user/controller/UserController.java": {
+    "mtime": 1784481234.5487878,
+    "ast_hash": "2c37367cff69f88c76ff9a64559fddaa",
+    "semantic_hash": "2c37367cff69f88c76ff9a64559fddaa"
+  },
+  "src/main/java/com/restaurantqr/modules/user/entity/User.java": {
+    "mtime": 1784481234.5487878,
+    "ast_hash": "bc1e796a360c61c4c2796ff2b5df0ab9",
+    "semantic_hash": "bc1e796a360c61c4c2796ff2b5df0ab9"
+  },
+  "src/main/java/com/restaurantqr/modules/user/repository/UserRepository.java": {
+    "mtime": 1784481234.5487878,
+    "ast_hash": "8854b55d0de1f7c57740558f91d1bbdb",
+    "semantic_hash": "8854b55d0de1f7c57740558f91d1bbdb"
+  },
+  "src/main/java/com/restaurantqr/modules/user/service/StaffUserRequest.java": {
+    "mtime": 1784481234.549932,
+    "ast_hash": "82e9fa170861a545abc46f1ff945bf84",
+    "semantic_hash": "82e9fa170861a545abc46f1ff945bf84"
+  },
+  "src/main/java/com/restaurantqr/modules/user/service/UpdateProfileRequest.java": {
+    "mtime": 1784481234.549932,
+    "ast_hash": "558381c8e4a006c0895f15f2d8cac6d4",
+    "semantic_hash": "558381c8e4a006c0895f15f2d8cac6d4"
+  },
+  "src/main/java/com/restaurantqr/modules/user/service/UserManagementService.java": {
+    "mtime": 1784481234.549932,
+    "ast_hash": "8e7fdb85a40b5c1a456283721d1dc30d",
+    "semantic_hash": "8e7fdb85a40b5c1a456283721d1dc30d"
+  },
+  "src/main/java/com/restaurantqr/security/JwtAuthenticationFilter.java": {
+    "mtime": 1784481234.550937,
+    "ast_hash": "0912d9466882c878903a013459fd9e7c",
+    "semantic_hash": "0912d9466882c878903a013459fd9e7c"
+  },
+  "src/main/java/com/restaurantqr/security/JwtTokenProvider.java": {
+    "mtime": 1784481234.550937,
+    "ast_hash": "6f50e4cef15d75f3d757ed79d7a38383",
+    "semantic_hash": "6f50e4cef15d75f3d757ed79d7a38383"
+  },
+  "src/main/java/com/restaurantqr/security/JwtUserDetails.java": {
+    "mtime": 1784481234.550937,
+    "ast_hash": "1e9854971df34f9aafa621a3a1bbcf5e",
+    "semantic_hash": "1e9854971df34f9aafa621a3a1bbcf5e"
+  },
+  "src/test/java/com/restaurantqr/modules/auth/AuthServiceTest.java": {
+    "mtime": 1784481234.5529375,
+    "ast_hash": "ff3997fc2a70b214faf21668c291a409",
+    "semantic_hash": "ff3997fc2a70b214faf21668c291a409"
+  },
+  "src/test/java/com/restaurantqr/modules/restaurant/PublicMenuControllerIntegrationTest.java": {
+    "mtime": 1784481234.5529375,
+    "ast_hash": "0b266feaa7195b1bffbc7f0f5754a154",
+    "semantic_hash": "0b266feaa7195b1bffbc7f0f5754a154"
+  },
+  "README.md": {
+    "mtime": 1784481234.51768,
+    "ast_hash": "7d18ad27c9d5737b88642232d3bd3892",
+    "semantic_hash": "7d18ad27c9d5737b88642232d3bd3892"
+  }
+}
