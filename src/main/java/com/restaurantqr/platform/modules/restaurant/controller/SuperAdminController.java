@@ -65,10 +65,20 @@ public class SuperAdminController {
             @PathVariable Long id,
             @RequestBody Map<String, String> body) {
 
-        restaurantRepository.findById(id).ifPresent(r -> {
-            r.setStatus(Restaurant.Status.valueOf(body.get("status").toUpperCase()));
-            restaurantRepository.save(r);
-        });
+        var restaurant = restaurantRepository.findById(id)
+                .filter(r -> !r.getIsDeleted())
+                .orElseThrow(() -> new com.restaurantqr.platform.common.ResourceNotFoundException("Restaurant", id));
+
+        String statusStr = body.get("status");
+        if (statusStr == null) {
+            throw new com.restaurantqr.platform.common.BadRequestException("Status is required");
+        }
+        try {
+            restaurant.setStatus(Restaurant.Status.valueOf(statusStr.toUpperCase()));
+            restaurantRepository.save(restaurant);
+        } catch (IllegalArgumentException e) {
+            throw new com.restaurantqr.platform.common.BadRequestException("Invalid status: " + statusStr);
+        }
         return ResponseEntity.ok(ApiResponse.success("Restaurant status updated", null));
     }
 

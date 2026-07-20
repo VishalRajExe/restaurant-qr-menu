@@ -16,8 +16,8 @@
 ## Current State (update in place, don't append)
 
 **Last updated:** _2026-07-21_
-**Current phase:** _Phase 5 QR AND PUBLIC MENU FLOW — COMPLETE_
-**Backend status:** _Spring Boot application builds and all 43 tests pass (`mvn clean test` ✅ SUCCESS)._
+**Current phase:** _Phase 6 SUBSCRIPTIONS, SUPER ADMIN AND PAYMENTS — COMPLETE_
+**Backend status:** _Spring Boot application builds and all 48 tests pass (`mvn clean test` ✅ SUCCESS)._
 **Frontend status:** _Not in scope — BACKEND ONLY._
 **Database status:** _H2 in-memory (dev). Flyway V1__init.sql present._
 **Environment:** _Development (H2)_
@@ -25,6 +25,13 @@
 ---
 
 ## Progress Log
+
+### 2026-07-21 — Phase 6 — Subscriptions, Super Admin and Payments (COMPLETE)
+- **Audited Super Admin & Subscription Lifecycle**:
+  - `SuperAdminController`: Enforced `@PreAuthorize("hasRole('SUPER_ADMIN')")` at class level. Fixed status patch endpoint error handling with validation for missing or invalid status strings and non-existent restaurant IDs.
+  - `SubscriptionController` / `SubscriptionService`: Verified `activate` is restricted exclusively to `SUPER_ADMIN` (`@PreAuthorize("hasRole('SUPER_ADMIN')")`). Confirmed subscription lifecycle management (`activate`, `cancel`, `getActiveSubscription`, `getHistory`, `expiringSoon`) and tenant scoping via `restaurantService.findById`.
+  - **Plan Limit Enforcement**: Verified server-side plan limit guards (`assertBranchLimit`, `assertMenuItemLimit`) preventing BASIC plan restaurants from creating > 1 branch (throws HTTP `402 Payment Required`).
+- **Created Phase 6 Test Suite (`Phase6SubscriptionsAndSuperAdminTest`)**: Added 5 integration tests verifying SUPER_ADMIN role authorization on `/super-admin/stats`, restaurant suspension patch, 403 on direct activation attempt by RESTAURANT_OWNER, 402 Payment Required on branch limit breach, and subscription cancellation. All 48 tests pass (`mvn clean test` ✅).
 
 ### 2026-07-21 — Phase 5 — QR and Public Menu Flow (COMPLETE)
 - **Audited & Hardened Full QR Scan Flow**:

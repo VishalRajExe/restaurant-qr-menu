@@ -102,12 +102,17 @@ Phase 0 Audit additions (this session):
 
 ---
 
-## Phase 6 — Public Customer Menu
-- Public (unauthenticated) endpoints: get restaurant by slug, get menu (categories + items) by slug.
-- Angular public menu app: home/banner, categories, item list, search, veg/non-veg + price filters, dark/light mode, multi-language.
-- Mobile-responsive layout.
+## Phase 6 — Subscriptions, Super Admin and Payments Module ✅ COMPLETE
 
-**Exit criteria:** Menu loads in < 2s on 4G test, search/filter work client-side or via API, dark/light toggle persists per session.
+**Completed: 2026-07-21**
+
+- [x] Super Admin authorization: Restricted `/super-admin/**` endpoints exclusively to `SUPER_ADMIN` role (`@PreAuthorize("hasRole('SUPER_ADMIN')")`).
+- [x] Restaurant status management: Super Admin can suspend/activate restaurants with proper input validation.
+- [x] Subscription activation protection: Direct API call to `/subscriptions/restaurants/{id}/activate` restricted to `SUPER_ADMIN` only to prevent payment bypass.
+- [x] Plan limit enforcement: Server-side enforcement of branch and menu item limits (`assertBranchLimit`, `assertMenuItemLimit`), throwing HTTP `402 Payment Required` when exceeded.
+- [x] Added automated test suite (`Phase6SubscriptionsAndSuperAdminTest`) verifying role authorization, activation bypass protection, status patching, plan limit breaches, and subscription cancellation.
+
+**Exit criteria:** ✅ Super Admin APIs locked down; subscription activation secured; plan limits enforced server-side; all 48 unit & integration tests pass (`mvn clean test` = 48/48 SUCCESS).
 
 ---
 
