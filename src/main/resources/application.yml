@@ -59,17 +59,16 @@ spring:
 # SECURITY: do not use a default secret in production. Set JWT_SECRET environment variable
 # to a strong random value (minimum 32 characters recommended).
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:devSecretKeyForLocalTestingMustBe32BytesMinLength123456!}
   access-token-expiration: 900000        # 15 minutes (ms)
   refresh-token-expiration: 604800000    # 7 days (ms)
 
 # ─── Cloudinary ───────────────────────────────────────────────────────────────
-# SECURITY: same as above — this API secret was committed in plaintext. Rotate it
-# in your Cloudinary dashboard and override via CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.
+# SECURITY: override via CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET in production.
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME:}
-  api-key: ${CLOUDINARY_API_KEY}
-  api-secret: ${CLOUDINARY_API_SECRET}
+  api-key: ${CLOUDINARY_API_KEY:mock-key}
+  api-secret: ${CLOUDINARY_API_SECRET:mock-secret}
   folder: restaurant-qr
 
 # ─── QR Code ──────────────────────────────────────────────────────────────────
