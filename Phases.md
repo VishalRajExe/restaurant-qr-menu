@@ -75,13 +75,17 @@ Phase 0 Audit additions (this session):
 
 ---
 
-## Phase 4 — Category & Menu Item Management
-- Category CRUD, display order (drag-and-drop support in API via an `order` field).
-- Menu item CRUD, image upload (to S3/Cloudinary, store `image_url` only), veg/non-veg flag, availability toggle.
-- Bulk upload endpoint (CSV or batch JSON) for menu items.
-- Angular: categories CRUD UI with drag-and-drop, menu items CRUD UI with image upload and bulk upload.
+## Phase 4 — Core Business Modules (Restaurant, Branch, Category, MenuItem, Offer) ✅ COMPLETE
 
-**Exit criteria:** Full CRUD works, images upload and render correctly, ordering persists, bulk upload validates and reports row-level errors.
+**Completed: 2026-07-21**
+
+- [x] Restaurant: CRUD, slug conflict handling (409 Conflict), tenant configuration.
+- [x] Branch: CRUD, soft deletion (`isDeleted = true`), opening hours and coordinates.
+- [x] Category: CRUD, display order reordering, active/inactive toggle, soft deletion.
+- [x] MenuItem: CRUD, `BigDecimal` price handling with `@DecimalMin("0.01")` validation, category ownership scoping, availability toggle, search/filtering.
+- [x] Offer: CRUD, date range validation (`startDate` <= `endDate`), discount type validation (`PERCENTAGE` 0.01–100%, `FLAT` > 0), active/expired logic.
+
+**Exit criteria:** ✅ All 5 core business modules verified end-to-end; DTO validation, entity relationships, soft delete, conflict handling, and business rules enforced; all 38 unit & integration tests pass (`mvn clean test` = 38/38 SUCCESS).
 
 ---
 

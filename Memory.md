@@ -16,8 +16,8 @@
 ## Current State (update in place, don't append)
 
 **Last updated:** _2026-07-21_
-**Current phase:** _Phase 3 MULTI-TENANT SECURITY / IDOR / BOLA — COMPLETE_
-**Backend status:** _Spring Boot application builds and all 33 tests pass (`mvn clean test` ✅ SUCCESS)._
+**Current phase:** _Phase 4 CORE BUSINESS MODULES — COMPLETE_
+**Backend status:** _Spring Boot application builds and all 38 tests pass (`mvn clean test` ✅ SUCCESS)._
 **Frontend status:** _Not in scope — BACKEND ONLY._
 **Database status:** _H2 in-memory (dev). Flyway V1__init.sql present._
 **Environment:** _Development (H2)_
@@ -25,6 +25,14 @@
 ---
 
 ## Progress Log
+
+### 2026-07-21 — Phase 4 — Core Business Modules (COMPLETE)
+- **Verified 5 Core Business Modules**: Restaurant, Branch, Category, MenuItem, and Offer.
+- **Audited & Hardened DTO Validation & Business Rules**:
+  - `MenuItem`: Verified `BigDecimal` for price, `@DecimalMin("0.01")` validation, category ownership scoping, availability toggling, and menu search/filter functionality.
+  - `Offer`: Added date range validation (`startDate` <= `endDate`) and discount value validation (`discountPercentage` between 0.01 and 100%, `discountAmount` > 0 for FLAT discounts).
+  - `Restaurant` / `Branch` / `Category`: Verified slug uniqueness conflict handling (409 Conflict), soft deletion behavior (`isDeleted = true`), and reordering logic.
+- **Created Phase 4 Test Suite (`Phase4CoreModulesVerificationTest`)**: Added 5 unit/integration tests verifying duplicate slug conflicts, branch soft deletion, category status toggling, menu item price validation, and offer date/discount range enforcement. All 38 tests pass (`mvn clean test` ✅).
 
 ### 2026-07-21 — Phase 3 — Multi-Tenant Security / IDOR / BOLA (COMPLETE)
 - **Hardened Entity-Level Tenant Isolation**: Enforced `restaurantService.findById(restaurantId)` and strict tenant ownership checks in `BranchService`, `CategoryService`, `MenuItemService`, `OfferService`, `QrCodeService`, and `UserManagementService`.

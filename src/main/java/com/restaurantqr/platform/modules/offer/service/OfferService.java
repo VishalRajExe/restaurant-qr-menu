@@ -52,6 +52,7 @@ public class OfferService {
 
     @Transactional
     public Offer create(Long restaurantId, OfferRequest request) {
+        validateOfferRequest(request);
         var restaurant = restaurantService.findById(restaurantId);
 
         var offer = Offer.builder()
@@ -70,6 +71,7 @@ public class OfferService {
 
     @Transactional
     public Offer update(Long id, Long restaurantId, OfferRequest request) {
+        validateOfferRequest(request);
         var offer = findById(id, restaurantId);
 
         offer.setTitle(request.title);
@@ -81,6 +83,21 @@ public class OfferService {
         offer.setEndDate(request.endDate);
 
         return offerRepository.save(offer);
+    }
+
+    private void validateOfferRequest(OfferRequest request) {
+        if (request.endDate != null && request.startDate != null && request.endDate.isBefore(request.startDate)) {
+            throw new com.restaurantqr.platform.common.BadRequestException("End date cannot be before start date");
+        }
+        if (request.discountType == Offer.DiscountType.PERCENTAGE) {
+            if (request.discountPercentage == null || request.discountPercentage.compareTo(java.math.BigDecimal.ZERO) <= 0 || request.discountPercentage.compareTo(new java.math.BigDecimal("100")) > 0) {
+                throw new com.restaurantqr.platform.common.BadRequestException("Percentage discount must be between 0.01 and 100%");
+            }
+        } else if (request.discountType == Offer.DiscountType.FLAT) {
+            if (request.discountAmount == null || request.discountAmount.compareTo(java.math.BigDecimal.ZERO) <= 0) {
+                throw new com.restaurantqr.platform.common.BadRequestException("Fixed discount amount must be greater than 0");
+            }
+        }
     }
 
     @Transactional
