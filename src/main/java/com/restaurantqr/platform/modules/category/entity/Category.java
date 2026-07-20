@@ -17,6 +17,7 @@ import lombok.*;
 @Builder
 public class Category extends BaseEntity {
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;

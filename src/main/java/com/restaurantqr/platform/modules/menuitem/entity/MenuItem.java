@@ -28,6 +28,7 @@ public class MenuItem extends BaseEntity {
     private Category category;
 
     // Denormalized for efficient filtering
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;

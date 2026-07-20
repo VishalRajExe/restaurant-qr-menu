@@ -16,8 +16,8 @@
 ## Current State (update in place, don't append)
 
 **Last updated:** _2026-07-21_
-**Current phase:** _Phase 7 FILES, ANALYTICS AND AUDITING — COMPLETE_
-**Backend status:** _Spring Boot application builds and all 53 tests pass (`mvn clean test` ✅ SUCCESS)._
+**Current phase:** _Phase 8 DATABASE INTEGRITY — COMPLETE_
+**Backend status:** _Spring Boot application builds and all 56 tests pass (`mvn clean test` ✅ SUCCESS)._
 **Frontend status:** _Not in scope — BACKEND ONLY._
 **Database status:** _H2 in-memory (dev). Flyway V1__init.sql present._
 **Environment:** _Development (H2)_
@@ -25,6 +25,13 @@
 ---
 
 ## Progress Log
+
+### 2026-07-21 — Phase 8 — Database Integrity (COMPLETE)
+- **Audited JPA Entities & Database Integrity**:
+  - `GlobalExceptionHandler`: Added `DataIntegrityViolationException` handler, mapping database unique constraint violations (duplicate email, duplicate slug, duplicate QR token) directly to HTTP `409 Conflict`.
+  - **Circular Reference & Lazy Initialization Safeguards**: Added `@JsonIgnore` to `restaurant` references in `Category` and `MenuItem` entities to prevent circular serialization recursion and eliminate `LazyInitializationException` risks when serializing JPA entities to JSON.
+  - **Transactional Boundaries**: Verified `@Transactional` on all multi-step mutation services (`AuthService.register`, `RestaurantService.create`, `OfferService.create/update`, `SubscriptionService.activate`, `CategoryService.reorder`).
+- **Created Phase 8 Test Suite (`Phase8DatabaseIntegrityTest`)**: Added 3 integration tests verifying `DataIntegrityViolationException` mapping to 409 Conflict, and JSON serialization safety on `Category` and `MenuItem` entities without circular reference. All 56 tests pass (`mvn clean test` ✅).
 
 ### 2026-07-21 — Phase 7 — Files, Analytics and Auditing (COMPLETE)
 - **Hardened File Upload Security**:

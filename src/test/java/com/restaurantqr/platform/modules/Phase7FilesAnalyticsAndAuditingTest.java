@@ -59,6 +59,20 @@ class Phase7FilesAnalyticsAndAuditingTest {
                 .build();
         restaurant.setId(55L);
 
+        var owner = com.restaurantqr.platform.users.entity.User.builder()
+                .email("owner@analytics.com")
+                .password("enc")
+                .role(com.restaurantqr.platform.users.entity.User.Role.RESTAURANT_OWNER)
+                .status(com.restaurantqr.platform.users.entity.User.Status.ACTIVE)
+                .restaurant(restaurant)
+                .build();
+        owner.setId(555L);
+
+        var userDetails = new com.restaurantqr.platform.security.JwtUserDetails(owner);
+        var auth = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(auth);
+
         when(restaurantRepository.findById(55L)).thenReturn(Optional.of(restaurant));
 
         var uploader = mock(Uploader.class);

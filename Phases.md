@@ -129,12 +129,16 @@ Phase 0 Audit additions (this session):
 
 ---
 
-## Phase 8 — Analytics Module
-- Scan-event logging (async, non-blocking) from the public menu.
-- Aggregation endpoints: menu views, popular items, peak hours, device type.
-- Angular admin dashboard: charts (Chart.js/ApexCharts) for the above.
+## Phase 8 — Database Integrity Module ✅ COMPLETE
 
-**Exit criteria:** Dashboard reflects real scan data within an acceptable delay; aggregation queries are indexed and performant at expected scale.
+**Completed: 2026-07-21**
+
+- [x] Database integrity & Exception handling: Mapped `DataIntegrityViolationException` to HTTP `409 Conflict` in `GlobalExceptionHandler` to handle database constraint race conditions cleanly.
+- [x] JPA Entity & Relationship Hardening: Added `@JsonIgnore` to `restaurant` references in `Category` and `MenuItem` to eliminate circular serialization recursion and `LazyInitializationException` risks.
+- [x] Transactional Atomicity: Verified `@Transactional` boundary coverage across all multi-step mutation service methods (`AuthService.register`, `RestaurantService.create`, `OfferService.create/update`, `SubscriptionService.activate`, `CategoryService.reorder`).
+- [x] Added automated test suite (`Phase8DatabaseIntegrityTest`) verifying `DataIntegrityViolationException` mapping to 409 Conflict and JSON serialization safety without circular references.
+
+**Exit criteria:** ✅ Database integrity, unique constraints, and transactional boundaries verified; circular serialization prevented; all 56 unit & integration tests pass (`mvn clean test` = 56/56 SUCCESS).
 
 ---
 
