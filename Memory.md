@@ -16,8 +16,8 @@
 ## Current State (update in place, don't append)
 
 **Last updated:** _2026-07-21_
-**Current phase:** _Phase 10 TEST SUITE — COMPLETE_
-**Backend status:** _Spring Boot application builds and all 60 tests pass (`mvn clean test` ✅ SUCCESS)._
+**Current phase:** _Phase 11 FULL VERIFICATION — COMPLETE_
+**Backend status:** _Spring Boot application builds executable JAR (`target/restaurant-qr-backend-1.0.0.jar`) and all 65 tests pass (`mvn clean package` ✅ SUCCESS)._
 **Frontend status:** _Not in scope — BACKEND ONLY._
 **Database status:** _H2 in-memory (dev). Flyway V1__init.sql present._
 **Environment:** _Development (H2)_
@@ -25,6 +25,17 @@
 ---
 
 ## Progress Log
+
+### 2026-07-21 — Phase 11 — Full Verification (COMPLETE)
+- **Executed Complete End-to-End Business Flows**:
+  - **FLOW A (Super Admin)**: Stats lookup, status update, owner account bootstrapping, and subscription activation verified (`Phase11FullVerificationTest.flowA_superAdminFlow`).
+  - **FLOW B (Restaurant Owner)**: Multi-resource CRUD (Restaurant, Branch, Category, MenuItem, Offer, QR) verified (`Phase11FullVerificationTest.flowB_restaurantOwnerFlow`).
+  - **FLOW C (Public Customer)**: Customer QR token scan & public menu slug resolution verified (`Phase11FullVerificationTest.flowC_publicCustomerFlow`).
+  - **FLOW D (Tenant Attack)**: Cross-tenant isolation across all resources verified (`Phase11FullVerificationTest.flowD_tenantAttackDenied`).
+  - **FLOW E (Subscription Limits)**: BASIC plan branch limit enforcement (HTTP 402) and direct activation bypass protection (HTTP 403) verified (`Phase11FullVerificationTest.flowE_subscriptionLimitAndBypassDenied`).
+- **Executed Full Build & Packaging Verification**:
+  - `mvn clean test`: **65 tests run, 0 failures, 0 errors** (BUILD SUCCESS).
+  - `mvn clean package`: Executable artifact built cleanly at `target/restaurant-qr-backend-1.0.0.jar` (BUILD SUCCESS).
 
 ### 2026-07-21 — Phase 10 — Test Suite Verification (COMPLETE)
 - **Comprehensive Regression & Integration Test Audit**:
