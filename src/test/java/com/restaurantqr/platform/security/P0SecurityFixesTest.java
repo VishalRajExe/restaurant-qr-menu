@@ -42,10 +42,10 @@ class P0SecurityFixesTest {
     private SubscriptionService subscriptionService;
 
     @Test
-    @DisplayName("P0-3/P0-4: Unauthenticated GET /api/v1/restaurants/1 is rejected with 401/403")
+    @DisplayName("P0-3/P0-4: Unauthenticated GET /api/v1/restaurants/1 is rejected with 401 Unauthorized")
     void unauthenticatedGetRestaurantById_isRejected() throws Exception {
         mockMvc.perform(get("/api/v1/restaurants/1").contextPath("/api/v1"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
