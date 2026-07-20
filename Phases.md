@@ -89,12 +89,16 @@ Phase 0 Audit additions (this session):
 
 ---
 
-## Phase 5 — QR Code Module
-- QR generation endpoint using ZXing, encoding the public menu URL (with optional `table_number`).
-- QR download (PNG) and print-friendly view.
-- Angular: QR management page (generate, download, print per branch/table).
+## Phase 5 — QR Code and Public Customer Menu Flow ✅ COMPLETE
 
-**Exit criteria:** Scanning a generated QR (real device test) opens the correct restaurant's public menu.
+**Completed: 2026-07-21**
+
+- [x] Full QR scan flow: QR generation → Cloudinary persistence → public token resolution → restaurant/branch lookup → active menu, categories & offers retrieval → async analytics scan event recording.
+- [x] Handled invalid, tampered, disabled/deleted QR tokens, and suspended/inactive restaurant slug lookups (returns 404 Not Found).
+- [x] Public DTO audit & data protection: Guaranteed zero exposure of password hashes, reset tokens, internal user fields, subscription billing secrets, or private analytics.
+- [x] Added automated integration test suite (`Phase5QrAndPublicMenuFlowTest`) covering valid scans, tampered/invalid tokens, inactive QR codes, suspended restaurant slug lookups, and DTO data leak prevention.
+
+**Exit criteria:** ✅ Customer QR scan and public menu flow verified end-to-end; no sensitive data leaked; all 43 unit & integration tests pass (`mvn clean test` = 43/43 SUCCESS).
 
 ---
 

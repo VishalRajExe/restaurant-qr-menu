@@ -16,8 +16,8 @@
 ## Current State (update in place, don't append)
 
 **Last updated:** _2026-07-21_
-**Current phase:** _Phase 4 CORE BUSINESS MODULES — COMPLETE_
-**Backend status:** _Spring Boot application builds and all 38 tests pass (`mvn clean test` ✅ SUCCESS)._
+**Current phase:** _Phase 5 QR AND PUBLIC MENU FLOW — COMPLETE_
+**Backend status:** _Spring Boot application builds and all 43 tests pass (`mvn clean test` ✅ SUCCESS)._
 **Frontend status:** _Not in scope — BACKEND ONLY._
 **Database status:** _H2 in-memory (dev). Flyway V1__init.sql present._
 **Environment:** _Development (H2)_
@@ -25,6 +25,13 @@
 ---
 
 ## Progress Log
+
+### 2026-07-21 — Phase 5 — QR and Public Menu Flow (COMPLETE)
+- **Audited & Hardened Full QR Scan Flow**:
+  - `QrCodeService.scan`: Enhanced scan filter to reject soft-deleted QR codes, deleted branches, or suspended/inactive/deleted restaurants.
+  - `PublicMenuController.getMenuBySlug`: Enforced active restaurant status check (`restaurant.getStatus() == Restaurant.Status.ACTIVE`), throwing `ResourceNotFoundException` on suspended or inactive restaurant slug lookups.
+  - **Public DTO Data Leak Hardening**: Added `@JsonIgnore` on `subscriptions` in `Restaurant` entity to guarantee payment secrets, gateway info, and internal billing details are never serialized into public JSON responses.
+- **Created Phase 5 Test Suite (`Phase5QrAndPublicMenuFlowTest`)**: Added 5 integration tests verifying valid QR token resolution, 404 on invalid/tampered QR tokens, 404 on inactive QR codes, 404 on suspended restaurant slug lookups, and verifying zero leakage of internal passwords, reset tokens, or subscription secrets. All 43 tests pass (`mvn clean test` ✅).
 
 ### 2026-07-21 — Phase 4 — Core Business Modules (COMPLETE)
 - **Verified 5 Core Business Modules**: Restaurant, Branch, Category, MenuItem, and Offer.

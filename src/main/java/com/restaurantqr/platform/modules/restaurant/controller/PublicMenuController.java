@@ -70,6 +70,9 @@ public class PublicMenuController {
     @GetMapping("/restaurant/{slug}")
     public ResponseEntity<ApiResponse<MenuPayload>> getMenuBySlug(@PathVariable String slug) {
         Restaurant restaurant = restaurantService.findBySlug(slug);
+        if (restaurant.getStatus() != Restaurant.Status.ACTIVE) {
+            throw new com.restaurantqr.platform.common.ResourceNotFoundException("Restaurant not found or inactive");
+        }
         Long restaurantId = restaurant.getId();
 
         List<Category> categories = categoryService.findActiveByRestaurant(restaurantId);

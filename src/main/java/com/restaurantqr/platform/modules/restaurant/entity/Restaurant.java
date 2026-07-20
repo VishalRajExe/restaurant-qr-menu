@@ -68,6 +68,7 @@ public class Restaurant extends BaseEntity {
     @Builder.Default
     private SubscriptionPlan subscriptionPlan = SubscriptionPlan.BASIC;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Subscription> subscriptions = new ArrayList<>();

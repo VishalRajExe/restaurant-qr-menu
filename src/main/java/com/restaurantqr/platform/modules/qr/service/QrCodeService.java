@@ -91,6 +91,11 @@ public class QrCodeService {
     @Transactional
     public QrCode scan(String token) {
         var qrCode = qrCodeRepository.findByTokenAndStatus(token, QrCode.Status.ACTIVE)
+                .filter(q -> !q.getIsDeleted()
+                        && q.getRestaurant() != null
+                        && !q.getRestaurant().getIsDeleted()
+                        && q.getRestaurant().getStatus() == com.restaurantqr.platform.modules.restaurant.entity.Restaurant.Status.ACTIVE
+                        && (q.getBranch() == null || !q.getBranch().getIsDeleted()))
                 .orElseThrow(() -> new ResourceNotFoundException("QR code not found or inactive"));
         qrCode.incrementScan();
         return qrCodeRepository.save(qrCode);
