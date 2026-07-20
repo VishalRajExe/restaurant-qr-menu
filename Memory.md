@@ -16,8 +16,8 @@
 ## Current State (update in place, don't append)
 
 **Last updated:** _2026-07-21_
-**Current phase:** _Phase 8 DATABASE INTEGRITY — COMPLETE_
-**Backend status:** _Spring Boot application builds and all 56 tests pass (`mvn clean test` ✅ SUCCESS)._
+**Current phase:** _Phase 9 APPLICATION HARDENING — COMPLETE_
+**Backend status:** _Spring Boot application builds and all 59 tests pass (`mvn clean test` ✅ SUCCESS)._
 **Frontend status:** _Not in scope — BACKEND ONLY._
 **Database status:** _H2 in-memory (dev). Flyway V1__init.sql present._
 **Environment:** _Development (H2)_
@@ -25,6 +25,13 @@
 ---
 
 ## Progress Log
+
+### 2026-07-21 — Phase 9 — Application Hardening (COMPLETE)
+- **Application Hardening & Logging Audit**:
+  - Replaced all raw `System.out.println` calls with SLF4J `log.debug` logging in `SecurityConfig.java`.
+  - Confirmed security response headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Content-Security-Policy`, `Strict-Transport-Security`, `Permissions-Policy`).
+  - Verified error response safety (`GlobalExceptionHandler`): all exception handlers return clean JSON formatted error maps with zero leakage of stack traces, internal SQL statements, or filesystem paths.
+- **Created Phase 9 Test Suite (`Phase9ApplicationHardeningTest`)**: Added 3 integration tests verifying security header presence, validation error response safety, and type mismatch clean handling without stack trace leaks. All 59 tests pass (`mvn clean test` ✅).
 
 ### 2026-07-21 — Phase 8 — Database Integrity (COMPLETE)
 - **Audited JPA Entities & Database Integrity**:

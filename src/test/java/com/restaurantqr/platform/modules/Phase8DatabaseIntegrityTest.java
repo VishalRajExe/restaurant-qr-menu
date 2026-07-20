@@ -76,7 +76,7 @@ class Phase8DatabaseIntegrityTest {
         String registerBody = """
                 {
                     "restaurantName": "New Rest",
-                    "ownerName": "John Doe",
+                    "name": "John Doe",
                     "email": "existing@example.com",
                     "password": "Password123!"
                 }

@@ -10,6 +10,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,6 +41,7 @@ import java.util.List;
  * Security configuration for the application.
  * Includes CORS, JWT authentication, session management, and security headers.
  */
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -60,7 +62,7 @@ public class SecurityConfig {
 
     @PostConstruct
     public void init() {
-        System.out.println("SECURITY CONFIG: PostConstruct called");
+        log.debug("SecurityConfig initialized");
     }
 
     // ─── Public endpoints (no auth needed) ────────────────────────────────────
@@ -126,13 +128,10 @@ public class SecurityConfig {
 
     private Filter loggingFilter() {
         return new Filter() {
-            {
-                System.out.println("LOGGING FILTER: Instance created");
-            }
             @Override
             public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
-                System.out.println("LOGGING FILTER: Request URI: " + httpRequest.getRequestURI());
+                log.debug("Request URI: {}", httpRequest.getRequestURI());
                 chain.doFilter(request, response);
             }
         };

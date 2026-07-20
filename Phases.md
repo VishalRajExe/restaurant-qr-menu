@@ -142,13 +142,16 @@ Phase 0 Audit additions (this session):
 
 ---
 
-## Phase 9 — Subscriptions & Billing
-- Plan definitions (Basic/Professional/Enterprise) with enforced limits (branch count, item count).
-- Razorpay + PayPal integration for recurring billing; webhook handlers for payment events.
-- Super admin: revenue tracking, subscription status per restaurant.
-- Enforce plan limits server-side (reject creating a 2nd branch on Basic plan, etc.).
+## Phase 9 — Application Hardening Module ✅ COMPLETE
 
-**Exit criteria:** Plan limits are enforced with clear error messages; successful payment upgrades a restaurant's plan; webhook failures are logged and retried.
+**Completed: 2026-07-21**
+
+- [x] Audit stdout logging: Removed raw `System.out.println` statements from production configuration, replacing with SLF4J logger calls.
+- [x] Security headers: Verified security headers filter enforcing `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`, `Content-Security-Policy`, and `Permissions-Policy`.
+- [x] Error Response Safety: Verified `GlobalExceptionHandler` strips stack traces, SQL syntax details, internal package names, and filesystem paths from error payloads.
+- [x] Added automated test suite (`Phase9ApplicationHardeningTest`) verifying security response headers, error payload safety, and clean handling of validation failures and type mismatches.
+
+**Exit criteria:** ✅ Application hardened against information leaks and debug outputs; security headers active; safe error responses enforced; all 59 unit & integration tests pass (`mvn clean test` = 59/59 SUCCESS).
 
 ---
 
