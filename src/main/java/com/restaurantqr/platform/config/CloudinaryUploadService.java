@@ -22,14 +22,20 @@ public class CloudinaryUploadService {
     @Value("${cloudinary.folder:restaurant-qr}")
     private String folder;
 
+    private static final java.util.Set<String> ALLOWED_MIME_TYPES = java.util.Set.of(
+            "image/jpeg", "image/png", "image/webp", "image/gif"
+    );
+
     // Upload MultipartFile
     @SuppressWarnings("unchecked")
     public String uploadImage(MultipartFile file, String subfolder) throws IOException {
 
         validateImageFile(file);
 
+        String safeSubfolder = subfolder != null ? subfolder.replaceAll("[^a-zA-Z0-9_-]", "") : "general";
+
         Map<String, Object> params = ObjectUtils.asMap(
-                "folder", folder + "/" + subfolder,
+                "folder", folder + "/" + safeSubfolder,
                 "resource_type", "image",
                 "quality", "auto",
                 "fetch_format", "auto"
@@ -83,12 +89,23 @@ public class CloudinaryUploadService {
 
         String contentType = file.getContentType();
 
-        if (contentType == null ||
-                !contentType.startsWith("image/")) {
+        if (contentType == null || !ALLOWED_MIME_TYPES.contains(contentType.toLowerCase())) {
 
             throw new BadRequestException(
-                    "Only image files are allowed"
+                    "Only JPEG, PNG, WEBP, and GIF images are allowed"
             );
+        }
+
+        String filename = file.getOriginalFilename();
+        if (filename != null) {
+            String lowerName = filename.toLowerCase();
+            if (lowerName.contains("..") || lowerName.contains("/") || lowerName.contains("\\")) {
+                throw new BadRequestException("Filename contains invalid path traversal characters");
+            }
+            if (lowerName.endsWith(".php") || lowerName.endsWith(".jsp") || lowerName.endsWith(".exe")
+                    || lowerName.endsWith(".sh") || lowerName.endsWith(".html") || lowerName.endsWith(".svg") || lowerName.endsWith(".js")) {
+                throw new BadRequestException("File extension is not allowed");
+            }
         }
 
         if (file.getSize() > 5 * 1024 * 1024) {
