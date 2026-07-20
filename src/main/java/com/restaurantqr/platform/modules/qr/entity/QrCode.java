@@ -44,8 +44,8 @@ public class QrCode extends BaseEntity {
     @Column(name = "token", nullable = false, unique = true, length = 64)
     private String token;   // UUID-based, used in the URL
 
-    @Column(name = "qr_image_url")
-    private String qrImageUrl;   // Cloudinary URL of the generated QR PNG
+    @Column(name = "qr_image_url", columnDefinition = "TEXT")
+    private String qrImageUrl;   // Cloudinary URL or base64 data URI of the generated QR PNG
 
     @Column(name = "scan_count", nullable = false)
     @Builder.Default

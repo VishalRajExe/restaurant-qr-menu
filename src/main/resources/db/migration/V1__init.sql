@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS qr_codes (
     table_number VARCHAR(20),
     label VARCHAR(100),
     token VARCHAR(64) NOT NULL UNIQUE,
-    qr_image_url VARCHAR(500),
+    qr_image_url TEXT,
     scan_count BIGINT NOT NULL DEFAULT 0,
     status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     created_at DATETIME NOT NULL,

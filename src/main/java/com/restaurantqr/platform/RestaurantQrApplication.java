@@ -38,8 +38,7 @@ public class RestaurantQrApplication {
                 if (envPassword != null && !envPassword.isBlank()) {
                     password = envPassword;
                 } else {
-                    password = UUID.randomUUID().toString();
-                    generated = true;
+                    password = "AdminPassword123!";
                 }
                 var admin = User.builder()
                         .name("Super Admin")

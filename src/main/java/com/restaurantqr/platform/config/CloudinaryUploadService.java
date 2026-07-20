@@ -51,16 +51,21 @@ public class CloudinaryUploadService {
     @SuppressWarnings("unchecked")
     public String uploadBytes(byte[] bytes, String publicId) throws IOException {
 
-        Map<String, Object> params = ObjectUtils.asMap(
-                "public_id", folder + "/" + publicId,
-                "resource_type", "image",
-                "overwrite", true
-        );
+        try {
+            Map<String, Object> params = ObjectUtils.asMap(
+                    "public_id", folder + "/" + publicId,
+                    "resource_type", "image",
+                    "overwrite", true
+            );
 
-        Map<String, Object> result =
-                cloudinary.uploader().upload(bytes, params);
+            Map<String, Object> result =
+                    cloudinary.uploader().upload(bytes, params);
 
-        return (String) result.get("secure_url");
+            return (String) result.get("secure_url");
+        } catch (Exception e) {
+            log.warn("Cloudinary upload failed ({}), returning base64 data URI", e.getMessage());
+            return "data:image/png;base64," + java.util.Base64.getEncoder().encodeToString(bytes);
+        }
     }
 
     public void deleteImage(String url) {
