@@ -178,6 +178,7 @@ class Phase11FullVerificationTest {
         when(menuItemRepository.findActiveByRestaurantId(100L)).thenReturn(List.of(menuItemA));
         when(offerRepository.findActiveOffers(100L, LocalDate.now())).thenReturn(List.of(offerA));
         when(qrCodeRepository.findByTokenAndStatus("qr-token-flow-a", QrCode.Status.ACTIVE)).thenReturn(Optional.of(qrCodeA));
+        when(qrCodeRepository.save(any(QrCode.class))).thenReturn(qrCodeA);
     }
 
     @Test
