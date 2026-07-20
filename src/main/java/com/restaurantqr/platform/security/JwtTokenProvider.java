@@ -38,6 +38,7 @@ public class JwtTokenProvider {
 
     public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "ACCESS");
         if (userDetails instanceof JwtUserDetails jwtUser) {
             claims.put("role", jwtUser.getRole());
             claims.put("restaurantId", jwtUser.getRestaurantId());
@@ -47,7 +48,9 @@ public class JwtTokenProvider {
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails.getUsername(), refreshTokenExpiration);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "REFRESH");
+        return buildToken(claims, userDetails.getUsername(), refreshTokenExpiration);
     }
 
     private String buildToken(Map<String, Object> extraClaims, String subject, long expiration) {
@@ -75,6 +78,18 @@ public class JwtTokenProvider {
             log.warn("Invalid JWT token: {}", e.getMessage());
             return false;
         }
+    }
+
+    public boolean isAccessToken(String token) {
+        if (!validateToken(token)) return false;
+        String type = extractClaim(token, claims -> claims.get("type", String.class));
+        return "ACCESS".equals(type);
+    }
+
+    public boolean isRefreshToken(String token) {
+        if (!validateToken(token)) return false;
+        String type = extractClaim(token, claims -> claims.get("type", String.class));
+        return "REFRESH".equals(type);
     }
 
     // ─── Extract ───────────────────────────────────────────────────────────────

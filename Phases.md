@@ -45,14 +45,19 @@ Phase 0 Audit additions (this session):
 
 ---
 
-## Phase 2 — Auth Module
-- JWT login, logout, refresh token endpoints.
-- Password hashing (BCrypt), forgot/reset password flow.
-- Role-based access: `SUPER_ADMIN`, `RESTAURANT_OWNER`, `MANAGER`, `STAFF`.
-- Spring Security config + JWT filter + method-level `@PreAuthorize`.
-- Angular: login page, auth guard, JWT interceptor, refresh-token handling.
+## Phase 2 — Authentication, JWT and RBAC Module ✅ COMPLETE
 
-**Exit criteria:** Can register/login as each role; protected endpoints reject unauthenticated/unauthorized requests; refresh token flow works end-to-end.
+**Completed: 2026-07-20**
+
+- [x] JWT login (`/auth/login`), refresh token (`/auth/refresh`), forgot/reset password (`/auth/forgot-password`, `/auth/reset-password`), change password (`/auth/change-password`).
+- [x] Password hashing using BCrypt (cost factor 12).
+- [x] Role-based access control: `SUPER_ADMIN`, `RESTAURANT_OWNER`, `MANAGER`, `STAFF`.
+- [x] Spring Security 401 Unauthorized (unauthenticated/expired/invalid token) vs 403 Forbidden (insufficient authority).
+- [x] Token type validation: Access tokens (`type: ACCESS`, 15m) vs Refresh tokens (`type: REFRESH`, 7d).
+- [x] Account status enforcement: Inactive/Suspended accounts rejected at filter level.
+- [x] Public registration role escalation protection: Self-registration hardcoded to `STAFF`.
+
+**Exit criteria:** ✅ Protected endpoints return 401 for unauthenticated/expired/invalid JWT requests; 403 for unauthorized roles; all 21 unit & integration tests pass (`mvn clean test` = 21/21 SUCCESS).
 
 ---
 

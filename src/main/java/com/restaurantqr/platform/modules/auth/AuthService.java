@@ -79,13 +79,17 @@ public class AuthService {
     // ─── Refresh Token ────────────────────────────────────────────────────────
 
     public AuthResponse refreshToken(RefreshTokenRequest request) {
-        if (!jwtTokenProvider.validateToken(request.refreshToken)) {
+        if (!jwtTokenProvider.isRefreshToken(request.refreshToken)) {
             throw new BadRequestException("Invalid or expired refresh token");
         }
 
         String email = jwtTokenProvider.extractEmail(request.refreshToken);
         var user = userRepository.findByEmailAndIsDeletedFalse(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.getStatus() != User.Status.ACTIVE) {
+            throw new BadRequestException("Account is inactive or suspended");
+        }
 
         var userDetails = new JwtUserDetails(user);
         return buildAuthResponse(userDetails, user);
@@ -126,8 +130,10 @@ public class AuthService {
 
     @Transactional
     public void changePassword(ChangePasswordRequest request) {
-        var principal = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !(auth.getPrincipal() instanceof JwtUserDetails principal)) {
+            throw new com.restaurantqr.platform.common.ForbiddenException("Authentication required");
+        }
 
         var user = userRepository.findByEmailAndIsDeletedFalse(principal.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));

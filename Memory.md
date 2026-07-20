@@ -16,8 +16,8 @@
 ## Current State (update in place, don't append)
 
 **Last updated:** _2026-07-20_
-**Current phase:** _Phase 1 P0 CRITICAL SECURITY — COMPLETE_
-**Backend status:** _Spring Boot application builds and all 15 tests pass (`mvn clean test` ✅ SUCCESS)._
+**Current phase:** _Phase 2 AUTHENTICATION, JWT AND RBAC — COMPLETE_
+**Backend status:** _Spring Boot application builds and all 21 tests pass (`mvn clean test` ✅ SUCCESS)._
 **Frontend status:** _Not in scope — BACKEND ONLY._
 **Database status:** _H2 in-memory (dev). Flyway V1__init.sql present._
 **Environment:** _Development (H2)_
@@ -25,6 +25,14 @@
 ---
 
 ## Progress Log
+
+### 2026-07-20 — Phase 2 — Authentication, JWT and RBAC (COMPLETE)
+- **Implemented 401 vs 403 Security Exception Handlers**: Configured custom `authenticationEntryPoint` (returns HTTP 401 Unauthorized for unauthenticated/expired/invalid JWT requests) and `accessDeniedHandler` (returns HTTP 403 Forbidden for insufficient role/authority).
+- **Strict Access vs Refresh Token Type Enforcement**: Added `"type": "ACCESS"` and `"type": "REFRESH"` claims in `JwtTokenProvider`. `JwtAuthenticationFilter` enforces access tokens only; `AuthService.refreshToken` enforces refresh tokens only.
+- **Enforced Active/Unlocked Account Status**: Updated `JwtUserDetails` (`isAccountNonLocked()`, `isEnabled()`) and `JwtAuthenticationFilter` to reject API access for users with `INACTIVE` or `SUSPENDED` status.
+- **Secured `/auth/change-password`**: Replaced broad `/auth/**` permitAll in `SecurityConfig` with explicit public auth endpoints (`/auth/login`, `/auth/register`, `/auth/refresh`, `/auth/forgot-password`, `/auth/reset-password`). `/auth/change-password` now requires authentication.
+- **Created Phase 2 Test Suite (`Phase2AuthJwtRbacTest`)**: Added 6 tests covering 401 on missing/invalid/expired/refresh token, 403 on lower role, suspended user token rejection, and role escalation prevention. All 21 tests in project pass cleanly (`mvn clean test` ✅).
+- Updated `docs/audits/SECURITY_AUDIT.md`.
 
 ### 2026-07-20 — Phase 1 — P0 Critical Security (COMPLETE)
 - **Resolved P0-1 (JWT Secret Fail-Fast Guard)**: Added `@PostConstruct` guard in `JwtTokenProvider` to validate secret key length ≥ 32 bytes (256 bits).

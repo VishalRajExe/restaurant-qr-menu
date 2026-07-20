@@ -18,6 +18,7 @@ public class JwtUserDetails implements UserDetails {
     private final String role;
     private final Long restaurantId;
     private final boolean active;
+    private final boolean suspended;
 
     public JwtUserDetails(User user) {
         this.userId = user.getId();
@@ -26,6 +27,7 @@ public class JwtUserDetails implements UserDetails {
         this.role = user.getRole().name();
         this.restaurantId = user.getRestaurant() != null ? user.getRestaurant().getId() : null;
         this.active = user.getStatus() == User.Status.ACTIVE;
+        this.suspended = user.getStatus() == User.Status.SUSPENDED;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class JwtUserDetails implements UserDetails {
     @Override public String getPassword() { return password; }
     @Override public String getUsername() { return email; }
     @Override public boolean isAccountNonExpired() { return true; }
-    @Override public boolean isAccountNonLocked() { return true; }
+    @Override public boolean isAccountNonLocked() { return !suspended; }
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return active; }
 }

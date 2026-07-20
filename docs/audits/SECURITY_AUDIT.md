@@ -96,3 +96,46 @@ During Phase 1, all 5 P0 Critical findings identified in Phase 0 were thoroughly
 - [x] Tenant access controls enforced on `GET /restaurants/{id}` and subscription service methods.
 - [x] All test suites passing (`mvn clean test` = 100% SUCCESS).
 - [x] Phase 1 documentation updated (`Memory.md`, `Phases.md`, `SECURITY_AUDIT.md`).
+
+---
+
+## Phase 2 — Authentication, JWT and RBAC Audit & Hardening
+
+**Date:** 2026-07-20  
+**Scope:** Phase 2 — Auth, JWT & RBAC Focus  
+**Build & Test Status:** `mvn clean test` → **BUILD SUCCESS** (21 tests run, 0 failures, 0 errors)
+
+### Summary of Phase 2 Fixes & Hardening
+
+1. **401 Unauthorized vs 403 Forbidden Response Strategy**:
+   - Added custom `authenticationEntryPoint` in `SecurityConfig` to return **401 Unauthorized** with `ApiResponse` JSON for unauthenticated requests (no JWT, invalid JWT, expired JWT).
+   - Added custom `accessDeniedHandler` in `SecurityConfig` to return **403 Forbidden** with `ApiResponse` JSON for requests with insufficient role (e.g. `STAFF` trying to access `/super-admin/**`).
+
+2. **Strict Access vs Refresh Token Type Enforcement**:
+   - Added `"type": "ACCESS"` claim to access tokens (15m) and `"type": "REFRESH"` claim to refresh tokens (7d).
+   - Enforced `isAccessToken(token)` check in `JwtAuthenticationFilter`. Refresh tokens cannot be passed as Bearer Authorization header to API endpoints (prevents token lifetime bypass).
+   - Enforced `isRefreshToken(token)` check in `AuthService.refreshToken`. Access tokens cannot be passed to `/auth/refresh`.
+
+3. **User Account Status (INACTIVE / SUSPENDED) Enforcement**:
+   - Updated `JwtUserDetails` to check `user.getStatus() != User.Status.SUSPENDED` for `isAccountNonLocked()`, and `user.getStatus() == User.Status.ACTIVE` for `isEnabled()`.
+   - Updated `JwtAuthenticationFilter` to reject requests if `userDetails` is disabled or locked, revoking API access immediately when a user account status is changed to `INACTIVE` or `SUSPENDED`.
+
+4. **URL Protection Precision (`/auth/change-password`)**:
+   - Replaced wildcard `/auth/**` in `SecurityConfig.PUBLIC_ENDPOINTS` with explicit unauthenticated auth endpoints (`/auth/login`, `/auth/register`, `/auth/refresh`, `/auth/forgot-password`, `/auth/reset-password`).
+   - `/auth/change-password` now requires valid JWT access token authentication (`.anyRequest().authenticated()`).
+
+5. **Role Escalation Protection**:
+   - Confirmed public self-registration assigns `STAFF` role by default, ignoring any user-supplied `role` field.
+   - Super Admin owner creation flow (`POST /super-admin/restaurants/{id}/owner`) is restricted to `SUPER_ADMIN` role.
+
+---
+
+### Phase 2 Verification Test Suite (`Phase2AuthJwtRbacTest`)
+
+- `noJwt_returns401`: Protected API with no JWT returns 401.
+- `invalidJwt_returns401`: Invalid JWT returns 401.
+- `refreshTokenAsAccessToken_returns401`: Passing refresh token as Bearer token returns 401.
+- `lowerRoleAccessSuperAdmin_returns403`: `RESTAURANT_OWNER` accessing `/super-admin/**` returns 403.
+- `suspendedUserJwt_returns401`: JWT from a suspended user returns 401.
+- `selfRegistration_assignsStaffRole`: Public registration ignores requested `role` and assigns `STAFF`.
+

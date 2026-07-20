@@ -39,21 +39,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            if (jwtTokenProvider.validateToken(token)) {
+            if (jwtTokenProvider.isAccessToken(token)) {
                 String email = jwtTokenProvider.extractEmail(token);
 
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     var userDetails = userDetailsService.loadUserByUsername(email);
 
-                    if (jwtTokenProvider.validateToken(token, userDetails)) {
+                    if (userDetails.isEnabled() && userDetails.isAccountNonLocked() && jwtTokenProvider.validateToken(token, userDetails)) {
                         var authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities()
                         );
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                         log.debug("Authenticated user: {}", email);
+                    } else {
+                        log.warn("User account inactive or locked: {}", email);
                     }
                 }
+            } else {
+                log.warn("Provided JWT token is not an access token or is invalid");
             }
         } catch (Exception e) {
             log.error("JWT authentication error: {}", e.getMessage());

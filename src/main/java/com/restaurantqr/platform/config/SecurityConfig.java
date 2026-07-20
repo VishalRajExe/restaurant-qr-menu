@@ -65,7 +65,11 @@ public class SecurityConfig {
 
     // ─── Public endpoints (no auth needed) ────────────────────────────────────
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/auth/**",
+            "/auth/login",
+            "/auth/register",
+            "/auth/refresh",
+            "/auth/forgot-password",
+            "/auth/reset-password",
             "/public/**",
             "/actuator/health",
             "/actuator/info",
@@ -81,6 +85,26 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(loggingFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(securityHeadersFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
+                            var apiResponse = com.restaurantqr.platform.common.ApiResponse.error("Full authentication is required to access this resource");
+                            var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                            mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+                            mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                            mapper.writeValue(response.getOutputStream(), apiResponse);
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
+                            var apiResponse = com.restaurantqr.platform.common.ApiResponse.error("Access denied: you don't have permission for this action");
+                            var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                            mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+                            mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                            mapper.writeValue(response.getOutputStream(), apiResponse);
+                        })
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         // Customer-facing restaurant lookups (used by the public menu page) — read-only, no auth.
