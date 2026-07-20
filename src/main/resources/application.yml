@@ -40,10 +40,10 @@ spring:
   # security settings and then override it via the MAIL_PASSWORD env var (or any
   # other SMTP provider) instead of editing this file again.
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: 
-    password: 
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
