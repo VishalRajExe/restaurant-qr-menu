@@ -52,7 +52,7 @@ public class MenuItemController {
     @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','STAFF','SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<List<MenuItem>>> getByCategory(@PathVariable Long categoryId,
                                                                       @PathVariable Long restaurantId) {
-        return ResponseEntity.ok(ApiResponse.success(menuItemService.getByCategory(categoryId)));
+        return ResponseEntity.ok(ApiResponse.success(menuItemService.getByCategory(categoryId, restaurantId)));
     }
 
     @PostMapping("/restaurants/{restaurantId}/menu-items")

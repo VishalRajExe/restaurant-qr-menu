@@ -37,7 +37,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<User>> getById(@PathVariable Long restaurantId,
                                                       @PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.success(userManagementService.findById(id)));
+        return ResponseEntity.ok(ApiResponse.success(userManagementService.findById(id, restaurantId)));
     }
 
     @PostMapping

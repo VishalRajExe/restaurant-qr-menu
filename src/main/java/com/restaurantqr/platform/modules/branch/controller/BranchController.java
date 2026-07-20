@@ -30,7 +30,7 @@ public class BranchController {
     @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','STAFF','SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<Branch>> getById(@PathVariable Long restaurantId,
                                                         @PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.success(branchService.findById(id)));
+        return ResponseEntity.ok(ApiResponse.success(branchService.findById(id, restaurantId)));
     }
 
     @PostMapping

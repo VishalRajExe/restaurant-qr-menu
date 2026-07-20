@@ -110,15 +110,21 @@ public class MenuItemService {
         menuItemRepository.save(item);
     }
 
-    public List<MenuItem> getByCategory(Long categoryId) {
-        return menuItemRepository.findActiveByCategoryId(categoryId);
+    public List<MenuItem> getByCategory(Long categoryId, Long restaurantId) {
+        restaurantService.findById(restaurantId);
+        var category = categoryRepository.findById(categoryId)
+                .filter(c -> c.getRestaurant().getId().equals(restaurantId) && !c.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Category", categoryId));
+        return menuItemRepository.findActiveByCategoryId(category.getId());
     }
 
     public List<MenuItem> getFeatured(Long restaurantId) {
+        restaurantService.findById(restaurantId);
         return menuItemRepository.findFeaturedByRestaurantId(restaurantId);
     }
 
     private MenuItem findByIdAndRestaurant(Long id, Long restaurantId) {
+        restaurantService.findById(restaurantId);
         return menuItemRepository.findById(id)
                 .filter(m -> m.getRestaurant().getId().equals(restaurantId) && !m.getIsDeleted())
                 .orElseThrow(() -> new ResourceNotFoundException("MenuItem", id));

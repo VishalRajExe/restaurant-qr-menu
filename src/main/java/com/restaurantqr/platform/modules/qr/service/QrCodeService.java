@@ -98,6 +98,17 @@ public class QrCodeService {
 
     // ─── CRUD ─────────────────────────────────────────────────────────────────
 
+    public QrCode findById(Long id, Long restaurantId) {
+        restaurantService.findById(restaurantId);
+        var qrCode = qrCodeRepository.findById(id)
+                .filter(q -> !q.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("QrCode", id));
+        if (!qrCode.getRestaurant().getId().equals(restaurantId)) {
+            throw new ForbiddenException("Not your QR code");
+        }
+        return qrCode;
+    }
+
     public QrCode findById(Long id) {
         return qrCodeRepository.findById(id)
                 .filter(q -> !q.getIsDeleted())
@@ -105,29 +116,28 @@ public class QrCodeService {
     }
 
     public List<QrCode> findByRestaurant(Long restaurantId) {
+        restaurantService.findById(restaurantId);
         return qrCodeRepository.findByRestaurantId(restaurantId);
     }
 
     public List<QrCode> findByBranch(Long branchId) {
+        var branch = branchRepository.findById(branchId)
+                .filter(b -> !b.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Branch", branchId));
+        restaurantService.findById(branch.getRestaurant().getId());
         return qrCodeRepository.findByBranchId(branchId);
     }
 
     @Transactional
     public void deactivate(Long id, Long restaurantId) {
-        var qrCode = findById(id);
-        if (!qrCode.getRestaurant().getId().equals(restaurantId)) {
-            throw new ForbiddenException("Not your QR code");
-        }
+        var qrCode = findById(id, restaurantId);
         qrCode.setStatus(QrCode.Status.INACTIVE);
         qrCodeRepository.save(qrCode);
     }
 
     @Transactional
     public void delete(Long id, Long restaurantId) {
-        var qrCode = findById(id);
-        if (!qrCode.getRestaurant().getId().equals(restaurantId)) {
-            throw new ForbiddenException("Not your QR code");
-        }
+        var qrCode = findById(id, restaurantId);
         qrCode.softDelete();
         qrCodeRepository.save(qrCode);
     }

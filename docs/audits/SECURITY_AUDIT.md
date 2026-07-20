@@ -139,3 +139,43 @@ During Phase 1, all 5 P0 Critical findings identified in Phase 0 were thoroughly
 - `suspendedUserJwt_returns401`: JWT from a suspended user returns 401.
 - `selfRegistration_assignsStaffRole`: Public registration ignores requested `role` and assigns `STAFF`.
 
+---
+
+## Phase 3 — Multi-Tenant Security / IDOR / BOLA Audit & Hardening
+
+**Date:** 2026-07-21  
+**Scope:** Phase 3 — Multi-Tenant Isolation & IDOR/BOLA Prevention  
+**Build & Test Status:** `mvn clean test` → **BUILD SUCCESS** (33 tests run, 0 failures, 0 errors)
+
+### Summary of Phase 3 Fixes & Hardening
+
+1. **Entity-Level Tenant Scoping Hardening**:
+   - `BranchService`: Added `restaurantService.findById(restaurantId)` check to `findByRestaurant` and `findById(id, restaurantId)` with ownership verification across all CRUD operations.
+   - `CategoryService`: Enforced `restaurantService.findById(restaurantId)` and `assertOwnership` across `findByRestaurant`, `findById(id, restaurantId)`, `update`, `updateImage`, `reorder`, `toggleStatus`, and `delete`.
+   - `MenuItemService`: Enforced tenant validation in `getByCategory(categoryId, restaurantId)`, verifying category belongs to the authenticated user's restaurant; checked `restaurantService.findById(restaurantId)` in `getFeatured` and `findByIdAndRestaurant`.
+   - `OfferService`: Added `restaurantService.findById(restaurantId)` to `getAllByRestaurant` and enforced tenant scoping in `findById(id, restaurantId)`, `update`, `updateBanner`, and `delete`.
+   - `QrCodeService`: Enforced tenant ownership in `findById(id, restaurantId)`, `findByRestaurant`, `findByBranch`, `deactivate`, and `delete`.
+   - `UserManagementService`: Enforced tenant ownership in `listByRestaurant`, `findById(id, restaurantId)`, `updateProfile`, `toggleStatus`, and `delete`.
+
+2. **Cross-Tenant Parent Relationship Injection Prevention**:
+   - `MenuItemService.create`: Validates that `request.categoryId` belongs to `restaurantId`. Returns 404/403 if category ID belongs to another tenant.
+   - `QrCodeService.generate`: Validates that `request.branchId` belongs to `restaurantId`. Returns 404/403 if branch ID belongs to another tenant.
+
+---
+
+### Phase 3 Verification Test Suite (`Phase3TenantIsolationTest`)
+
+- `ownerA_getRestaurantB_forbidden`: Owner A calling `GET /restaurants/2` returns 403.
+- `ownerA_updateRestaurantB_forbidden`: Owner A calling `PUT /restaurants/2` returns 403.
+- `ownerA_getBranchB_forbidden`: Owner A calling `GET /restaurants/2/branches/200` returns 403.
+- `ownerA_getBranchB_underOwnPath_forbidden`: Owner A calling `GET /restaurants/1/branches/200` (IDOR under own path) returns 403.
+- `ownerA_getCategoryB_underOwnPath_forbidden`: Owner A calling `GET /restaurants/1/categories/2000` returns 403.
+- `ownerA_deleteCategoryB_forbidden`: Owner A calling `DELETE /restaurants/2/categories/2000` returns 403.
+- `ownerA_getMenuItemsOfCategoryB_forbidden`: Owner A calling `GET /restaurants/1/menu-items/category/2000` returns 403.
+- `ownerA_createMenuItem_crossTenantCategory_rejected`: Owner A creating menu item with Category B ID returns 404.
+- `ownerA_deleteOfferB_underOwnPath_forbidden`: Owner A calling `DELETE /restaurants/1/offers/200000` returns 403.
+- `ownerA_generateQrCode_crossTenantBranch_rejected`: Owner A generating QR code with Branch B ID returns 404.
+- `ownerA_getUserB_underOwnPath_forbidden`: Owner A calling `GET /restaurants/1/users/20` returns 403.
+- `ownerA_getAnalyticsB_forbidden`: Owner A calling `GET /analytics/restaurants/2/dashboard` returns 403.
+
+

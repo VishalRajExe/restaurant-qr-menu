@@ -61,12 +61,17 @@ Phase 0 Audit additions (this session):
 
 ---
 
-## Phase 3 — Restaurant & Branch Management
-- Restaurant CRUD (super admin creates restaurants; owner edits own profile).
-- Branch CRUD scoped to `restaurant_id`.
-- Angular: restaurant profile page, branch management page.
+## Phase 3 — Multi-Tenant Security / IDOR / BOLA ✅ COMPLETE
 
-**Exit criteria:** Owner can view/edit only their own restaurant; super admin can manage all restaurants; tenant isolation verified with a test (owner A cannot read/write restaurant B's data).
+**Completed: 2026-07-21**
+
+- [x] Strict tenant isolation for Restaurant, Branch, Category, MenuItem, Offer, QrCode, User, and Analytics resources.
+- [x] Enforced server-side `restaurantService.findById(restaurantId)` access assertion on every tenant-owned resource endpoint.
+- [x] Hardened sub-resource lookup methods (`findById(id, restaurantId)`) against cross-tenant ID swapping.
+- [x] Prevented cross-tenant relationship injection (e.g. creating MenuItem under Restaurant A with Category B ID).
+- [x] Added automated regression test suite (`Phase3TenantIsolationTest`) covering GET, POST, PUT, DELETE attacks across all tenant entities.
+
+**Exit criteria:** ✅ Tenant isolation verified end-to-end; Owner A cannot read/write/mutate Restaurant B's resources; all 33 unit & integration tests pass (`mvn clean test` = 33/33 SUCCESS).
 
 ---
 

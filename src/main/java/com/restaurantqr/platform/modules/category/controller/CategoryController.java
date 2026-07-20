@@ -42,7 +42,7 @@ public class CategoryController {
     @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','STAFF','SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<Category>> getById(@PathVariable Long restaurantId,
                                                           @PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.success(categoryService.findById(id)));
+        return ResponseEntity.ok(ApiResponse.success(categoryService.findById(id, restaurantId)));
     }
 
     @PostMapping

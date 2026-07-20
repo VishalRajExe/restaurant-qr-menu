@@ -15,9 +15,9 @@
 
 ## Current State (update in place, don't append)
 
-**Last updated:** _2026-07-20_
-**Current phase:** _Phase 2 AUTHENTICATION, JWT AND RBAC — COMPLETE_
-**Backend status:** _Spring Boot application builds and all 21 tests pass (`mvn clean test` ✅ SUCCESS)._
+**Last updated:** _2026-07-21_
+**Current phase:** _Phase 3 MULTI-TENANT SECURITY / IDOR / BOLA — COMPLETE_
+**Backend status:** _Spring Boot application builds and all 33 tests pass (`mvn clean test` ✅ SUCCESS)._
 **Frontend status:** _Not in scope — BACKEND ONLY._
 **Database status:** _H2 in-memory (dev). Flyway V1__init.sql present._
 **Environment:** _Development (H2)_
@@ -25,6 +25,12 @@
 ---
 
 ## Progress Log
+
+### 2026-07-21 — Phase 3 — Multi-Tenant Security / IDOR / BOLA (COMPLETE)
+- **Hardened Entity-Level Tenant Isolation**: Enforced `restaurantService.findById(restaurantId)` and strict tenant ownership checks in `BranchService`, `CategoryService`, `MenuItemService`, `OfferService`, `QrCodeService`, and `UserManagementService`.
+- **Prevented Cross-Tenant Relationship Injection**: Blocked creation/updates with cross-tenant parent IDs (e.g. creating MenuItem for Restaurant A using Category B ID, or generating QR Code for Restaurant A using Branch B ID).
+- **Created Phase 3 Integration Test Suite (`Phase3TenantIsolationTest`)**: Added 12 comprehensive attack tests verifying GET, POST, PUT, DELETE operations across Restaurant, Branch, Category, MenuItem, Offer, QrCode, User, and Analytics resources. All 33 unit & integration tests pass (`mvn clean test` ✅).
+- Updated `docs/audits/SECURITY_AUDIT.md`.
 
 ### 2026-07-20 — Phase 2 — Authentication, JWT and RBAC (COMPLETE)
 - **Implemented 401 vs 403 Security Exception Handlers**: Configured custom `authenticationEntryPoint` (returns HTTP 401 Unauthorized for unauthenticated/expired/invalid JWT requests) and `accessDeniedHandler` (returns HTTP 403 Forbidden for insufficient role/authority).

@@ -23,7 +23,17 @@ public class BranchService {
     private final RestaurantService restaurantService;
 
     public List<Branch> findByRestaurant(Long restaurantId) {
+        restaurantService.findById(restaurantId);
         return branchRepository.findByRestaurantId(restaurantId);
+    }
+
+    public Branch findById(Long id, Long restaurantId) {
+        restaurantService.findById(restaurantId);
+        var branch = branchRepository.findById(id)
+                .filter(b -> !b.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Branch", id));
+        assertOwnership(branch, restaurantId);
+        return branch;
     }
 
     public Branch findById(Long id) {
@@ -52,8 +62,7 @@ public class BranchService {
 
     @Transactional
     public Branch update(Long id, Long restaurantId, BranchRequest request) {
-        var branch = findById(id);
-        assertOwnership(branch, restaurantId);
+        var branch = findById(id, restaurantId);
 
         branch.setName(request.name);
         branch.setAddress(request.address);
@@ -67,8 +76,7 @@ public class BranchService {
 
     @Transactional
     public void delete(Long id, Long restaurantId) {
-        var branch = findById(id);
-        assertOwnership(branch, restaurantId);
+        var branch = findById(id, restaurantId);
         branch.softDelete();
         branchRepository.save(branch);
         log.info("Branch soft-deleted: id={} restaurantId={}", id, restaurantId);

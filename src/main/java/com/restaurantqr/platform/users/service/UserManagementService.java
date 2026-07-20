@@ -28,7 +28,17 @@ public class UserManagementService {
     private final PasswordEncoder passwordEncoder;
 
     public Page<User> listByRestaurant(Long restaurantId, Pageable pageable) {
+        restaurantService.findById(restaurantId);
         return userRepository.findByRestaurantId(restaurantId, pageable);
+    }
+
+    public User findById(Long id, Long restaurantId) {
+        restaurantService.findById(restaurantId);
+        var user = userRepository.findById(id)
+                .filter(u -> !u.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("User", id));
+        assertBelongsToRestaurant(user, restaurantId);
+        return user;
     }
 
     public User findById(Long id) {

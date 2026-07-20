@@ -24,11 +24,21 @@ public class CategoryService {
     private final RestaurantService restaurantService;
 
     public List<Category> findByRestaurant(Long restaurantId) {
+        restaurantService.findById(restaurantId);
         return categoryRepository.findByRestaurantIdOrdered(restaurantId);
     }
 
     public List<Category> findActiveByRestaurant(Long restaurantId) {
         return categoryRepository.findActiveByRestaurantId(restaurantId);
+    }
+
+    public Category findById(Long id, Long restaurantId) {
+        restaurantService.findById(restaurantId);
+        var category = categoryRepository.findById(id)
+                .filter(c -> !c.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Category", id));
+        assertOwnership(category, restaurantId);
+        return category;
     }
 
     public Category findById(Long id) {
@@ -53,8 +63,7 @@ public class CategoryService {
 
     @Transactional
     public Category update(Long id, Long restaurantId, CategoryRequest request) {
-        var category = findById(id);
-        assertOwnership(category, restaurantId);
+        var category = findById(id, restaurantId);
 
         category.setName(request.name);
         category.setDescription(request.description);
@@ -65,8 +74,7 @@ public class CategoryService {
 
     @Transactional
     public void updateImage(Long id, Long restaurantId, String imageUrl) {
-        var category = findById(id);
-        assertOwnership(category, restaurantId);
+        var category = findById(id, restaurantId);
         category.setImageUrl(imageUrl);
         categoryRepository.save(category);
     }
@@ -77,9 +85,9 @@ public class CategoryService {
      */
     @Transactional
     public void reorder(Long restaurantId, List<ReorderItem> items) {
+        restaurantService.findById(restaurantId);
         for (ReorderItem item : items) {
-            var category = findById(item.id);
-            assertOwnership(category, restaurantId);
+            var category = findById(item.id, restaurantId);
             categoryRepository.updateDisplayOrder(item.id, item.displayOrder);
         }
         log.info("Reordered {} categories for restaurant={}", items.size(), restaurantId);
@@ -87,8 +95,7 @@ public class CategoryService {
 
     @Transactional
     public void toggleStatus(Long id, Long restaurantId) {
-        var category = findById(id);
-        assertOwnership(category, restaurantId);
+        var category = findById(id, restaurantId);
         category.setStatus(category.getStatus() == Category.Status.ACTIVE
                 ? Category.Status.INACTIVE : Category.Status.ACTIVE);
         categoryRepository.save(category);
@@ -96,8 +103,7 @@ public class CategoryService {
 
     @Transactional
     public void delete(Long id, Long restaurantId) {
-        var category = findById(id);
-        assertOwnership(category, restaurantId);
+        var category = findById(id, restaurantId);
         category.softDelete();
         categoryRepository.save(category);
     }

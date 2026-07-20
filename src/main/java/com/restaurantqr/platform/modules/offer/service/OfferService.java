@@ -31,7 +31,17 @@ public class OfferService {
     }
 
     public List<Offer> getAllByRestaurant(Long restaurantId) {
+        restaurantService.findById(restaurantId);
         return offerRepository.findAllByRestaurantId(restaurantId);
+    }
+
+    public Offer findById(Long id, Long restaurantId) {
+        restaurantService.findById(restaurantId);
+        var offer = offerRepository.findById(id)
+                .filter(o -> !o.getIsDeleted())
+                .orElseThrow(() -> new ResourceNotFoundException("Offer", id));
+        assertOwnership(offer, restaurantId);
+        return offer;
     }
 
     public Offer findById(Long id) {
@@ -60,8 +70,7 @@ public class OfferService {
 
     @Transactional
     public Offer update(Long id, Long restaurantId, OfferRequest request) {
-        var offer = findById(id);
-        assertOwnership(offer, restaurantId);
+        var offer = findById(id, restaurantId);
 
         offer.setTitle(request.title);
         offer.setDescription(request.description);
@@ -76,16 +85,14 @@ public class OfferService {
 
     @Transactional
     public void updateBanner(Long id, Long restaurantId, String bannerUrl) {
-        var offer = findById(id);
-        assertOwnership(offer, restaurantId);
+        var offer = findById(id, restaurantId);
         offer.setBannerUrl(bannerUrl);
         offerRepository.save(offer);
     }
 
     @Transactional
     public void delete(Long id, Long restaurantId) {
-        var offer = findById(id);
-        assertOwnership(offer, restaurantId);
+        var offer = findById(id, restaurantId);
         offer.softDelete();
         offerRepository.save(offer);
     }
