@@ -35,10 +35,6 @@ spring:
         order_updates: true
 
   # ─── Mail ─────────────────────────────────────────────────────────────────────
-  # SECURITY: these were committed in plaintext in the original repo. Treat the
-  # Gmail app password below as compromised — rotate it in your Google Account
-  # security settings and then override it via the MAIL_PASSWORD env var (or any
-  # other SMTP provider) instead of editing this file again.
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
@@ -47,9 +43,15 @@ spring:
     properties:
       mail:
         smtp:
-          auth: true
+          auth: ${MAIL_SMTP_AUTH:true}
           starttls:
-            enable: true
+            enable: ${MAIL_SMTP_STARTTLS_ENABLE:true}
+          ssl:
+            enable: ${MAIL_SMTP_SSL_ENABLE:false}
+          connectiontimeout: ${MAIL_SMTP_TIMEOUT:5000}
+          timeout: ${MAIL_SMTP_TIMEOUT:5000}
+          writetimeout: ${MAIL_SMTP_TIMEOUT:5000}
+
 
   # ─── Cache ────────────────────────────────────────────────────────────────────
   cache:
@@ -81,6 +83,10 @@ qr:
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:4200}
   admin-url: ${ADMIN_URL:http://localhost:4201}
+  mail:
+    from: ${MAIL_FROM:${spring.mail.username:noreply@restaurantqr.com}}
+    enabled: ${MAIL_ENABLED:true}
+
 
 # ─── Actuator ─────────────────────────────────────────────────────────────────
 management:
