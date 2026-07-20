@@ -1,6 +1,14 @@
 package com.restaurantqr.platform.config;
 
 import com.restaurantqr.platform.security.JwtAuthenticationFilter;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +32,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Security configuration for the application.
+ * Includes CORS, JWT authentication, session management, and security headers.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -40,6 +54,14 @@ public class SecurityConfig {
 
     @Value("${app.admin-url}")
     private String adminUrl;
+
+    @Value("${server.servlet.context-path:/api/v1}")
+    private String contextPath;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("SECURITY CONFIG: PostConstruct called");
+    }
 
     // ─── Public endpoints (no auth needed) ────────────────────────────────────
     private static final String[] PUBLIC_ENDPOINTS = {
@@ -56,12 +78,13 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loggingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(securityHeadersFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                        // Customer-facing restaurant lookups (used by the public menu page,
-                        // including the no-slug "/menu-preview/{id}" fallback) — read-only, no auth.
+                        // Customer-facing restaurant lookups (used by the public menu page) — read-only, no auth.
                         .requestMatchers(HttpMethod.GET, "/restaurants/slug/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/restaurants/*").permitAll()
                         // Public pricing/plan comparison
                         .requestMatchers(HttpMethod.GET, "/subscriptions/plans").permitAll()
                         // Super admin only
@@ -74,8 +97,45 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    private Filter loggingFilter() {
+        return new Filter() {
+            {
+                System.out.println("LOGGING FILTER: Instance created");
+            }
+            @Override
+            public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+                HttpServletRequest httpRequest = (HttpServletRequest) request;
+                System.out.println("LOGGING FILTER: Request URI: " + httpRequest.getRequestURI());
+                chain.doFilter(request, response);
+            }
+        };
+    }
+
+    /**
+     * Security headers filter to protect against common vulnerabilities.
+     */
+    private Filter securityHeadersFilter() {
+        return new Filter() {
+            @Override
+            public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+                HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+                // Security Headers
+                httpResponse.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains"); // HSTS
+                httpResponse.setHeader("X-Content-Type-Options", "nosniff");
+                httpResponse.setHeader("X-Frame-Options", "DENY");
+                httpResponse.setHeader("X-XSS-Protection", "1; mode=block");
+                // Content Security Policy - adjust based on your frontend requirements
+                httpResponse.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'");
+                httpResponse.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+                httpResponse.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+
+                chain.doFilter(request, response);
+            }
+        };
     }
 
     @Bean
@@ -108,5 +168,40 @@ public class SecurityConfig {
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    /**
+     * Prepends the context path to the given pattern or array of patterns.
+     * Handles null or empty context path by returning the original pattern(s).
+     * Ensures no double slashes in the resulting pattern.
+     */
+    private String[] prependContextPath(String[] patterns) {
+        if (contextPath == null || contextPath.isEmpty()) {
+            return patterns;
+        }
+        // Remove trailing slash from context path if present
+        String ctx = contextPath;
+        if (ctx.endsWith("/")) {
+            ctx = ctx.substring(0, ctx.length() - 1);
+        }
+        String[] result = new String[patterns.length];
+        for (int i = 0; i < patterns.length; i++) {
+            String pattern = patterns[i];
+            // Remove leading slash from pattern if present
+            if (pattern.startsWith("/")) {
+                pattern = pattern.substring(1);
+            }
+            // Ensure no double slash by only adding slash if context path doesn't end with slash
+            // and pattern doesn't start with slash (which we already removed)
+            result[i] = ctx + "/" + pattern;
+        }
+        return result;
+    }
+
+    /**
+     * Overload for single pattern.
+     */
+    private String prependContextPath(String pattern) {
+        return prependContextPath(new String[]{pattern})[0];
     }
 }

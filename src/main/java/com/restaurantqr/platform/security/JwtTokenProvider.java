@@ -27,6 +27,13 @@ public class JwtTokenProvider {
     @Value("${jwt.refresh-token-expiration}")
     private long refreshTokenExpiration;
 
+    @jakarta.annotation.PostConstruct
+    public void validateSecret() {
+        if (jwtSecret == null || jwtSecret.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalStateException("JWT secret must be at least 256 bits (32 characters) long.");
+        }
+    }
+
     // ─── Generate ──────────────────────────────────────────────────────────────
 
     public String generateAccessToken(UserDetails userDetails) {

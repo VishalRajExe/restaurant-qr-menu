@@ -1,9 +1,10 @@
-package com.restaurantqr.modules.auth;
+package com.restaurantqr.platform.modules.auth;
 
-import com.restaurantqr.common.ConflictException;
-import com.restaurantqr.modules.user.entity.User;
-import com.restaurantqr.modules.user.repository.UserRepository;
-import com.restaurantqr.security.JwtTokenProvider;
+import com.restaurantqr.platform.common.ConflictException;
+import com.restaurantqr.platform.modules.auth.dto.UserRegistrationDto;
+import com.restaurantqr.platform.users.entity.User;
+import com.restaurantqr.platform.users.repository.UserRepository;
+import com.restaurantqr.platform.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class AuthServiceTest {
         when(jwtTokenProvider.generateAccessToken(any())).thenReturn("access-token");
         when(jwtTokenProvider.generateRefreshToken(any())).thenReturn("refresh-token");
 
-        var request = new RegisterRequest();
+        var request = new UserRegistrationDto();
         request.name     = "Test User";
         request.email    = "test@example.com";
         request.password = "Password@123";
@@ -70,7 +71,7 @@ class AuthServiceTest {
     void register_duplicateEmail_throwsConflict() {
         when(userRepository.existsByEmailAndIsDeletedFalse("existing@example.com")).thenReturn(true);
 
-        var request = new RegisterRequest();
+        var request = new UserRegistrationDto();
         request.email    = "existing@example.com";
         request.password = "Password@123";
         request.name     = "User";
@@ -83,7 +84,7 @@ class AuthServiceTest {
     @Test
     @DisplayName("Login succeeds with valid credentials")
     void login_success() {
-        var jwtUser = new com.restaurantqr.security.JwtUserDetails(testUser);
+        var jwtUser = new com.restaurantqr.platform.security.JwtUserDetails(testUser);
         var authToken = new UsernamePasswordAuthenticationToken(jwtUser, null, jwtUser.getAuthorities());
 
         when(authenticationManager.authenticate(any())).thenReturn(authToken);
@@ -119,7 +120,7 @@ class AuthServiceTest {
         request.newPassword = "NewPassword@123";
 
         assertThatThrownBy(() -> authService.resetPassword(request))
-                .isInstanceOf(com.restaurantqr.common.BadRequestException.class)
+                .isInstanceOf(com.restaurantqr.platform.common.BadRequestException.class)
                 .hasMessageContaining("expired");
     }
 }

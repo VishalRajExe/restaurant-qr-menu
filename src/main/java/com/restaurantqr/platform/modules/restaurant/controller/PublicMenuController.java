@@ -21,16 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * The single endpoint the Angular customer menu website calls after a QR scan.
- * Returns the entire menu payload in one request to minimize round-trips.
- *
- * Flow:
- *   1. Customer scans QR → gets token
- *   2. Angular calls GET /public/menu/{token}
- *   3. This endpoint resolves token → restaurant → full menu
- *   4. Analytics scan event recorded asynchronously
- */
 @RestController
 @RequestMapping("/public/menu")
 @RequiredArgsConstructor
@@ -43,10 +33,8 @@ public class PublicMenuController {
     private final OfferService offerService;
     private final AnalyticsService analyticsService;
 
-    /**
-     * Resolve QR token → full restaurant menu.
-     * GET /public/menu/{token}
-     */
+    // ─── Resolve QR token → full restaurant menu.
+    // GET /public/menu/{token}
     @GetMapping("/{token}")
     public ResponseEntity<ApiResponse<MenuPayload>> getMenuByToken(
             @PathVariable String token,
@@ -54,15 +42,13 @@ public class PublicMenuController {
 
         // 1. Resolve & validate QR code
         QrCode qrCode = qrCodeService.scan(token);
-        Long restaurantId = qrCode.getRestaurant().getId();
-
-        // 2. Fetch restaurant profile
-        Restaurant restaurant = restaurantService.findById(restaurantId);
+        Restaurant restaurant = qrCode.getRestaurant();
+        Long restaurantId = restaurant.getId();
 
         // 3. Fetch menu data
         List<Category> categories = categoryService.findActiveByRestaurant(restaurantId);
-        List<MenuItem> menuItems  = menuItemService.getPublicMenu(restaurantId);
-        List<Offer> activeOffers  = offerService.getActiveOffers(restaurantId);
+        List<MenuItem> menuItems = menuItemService.getPublicMenu(restaurantId);
+        List<Offer> activeOffers = offerService.getActiveOffers(restaurantId);
 
         // 4. Record scan event asynchronously (non-blocking)
         analyticsService.recordScan(qrCode, request);
@@ -79,21 +65,20 @@ public class PublicMenuController {
         return ResponseEntity.ok(ApiResponse.success(payload));
     }
 
-    /**
-     * Direct restaurant menu by slug (for shareable links like https://menu.yourdomain.com/r/winged-cafe)
-     * GET /public/menu/restaurant/{slug}
-     */
+    // ─── Direct restaurant menu by slug (for shareable links like https://menu.yourdomain.com/r/winged-cafe)
+    // GET /public/menu/restaurant/{slug}
     @GetMapping("/restaurant/{slug}")
     public ResponseEntity<ApiResponse<MenuPayload>> getMenuBySlug(@PathVariable String slug) {
         Restaurant restaurant = restaurantService.findBySlug(slug);
         Long restaurantId = restaurant.getId();
 
         List<Category> categories = categoryService.findActiveByRestaurant(restaurantId);
-        List<MenuItem> menuItems  = menuItemService.getPublicMenu(restaurantId);
-        List<Offer> activeOffers  = offerService.getActiveOffers(restaurantId);
+        List<MenuItem> menuItems = menuItemService.getPublicMenu(restaurantId);
+        List<Offer> activeOffers = offerService.getActiveOffers(restaurantId);
 
         var payload = MenuPayload.builder()
                 .restaurant(restaurant)
+                .qrCode(null)           // null when accessed via slug
                 .categories(categories)
                 .menuItems(menuItems)
                 .activeOffers(activeOffers)
@@ -102,8 +87,7 @@ public class PublicMenuController {
         return ResponseEntity.ok(ApiResponse.success(payload));
     }
 
-    // ─── Response Payload ─────────────────────────────────────────────────────
-
+    // ─── Response Payload
     @Data
     @Builder
     public static class MenuPayload {

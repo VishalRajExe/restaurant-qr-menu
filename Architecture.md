@@ -45,29 +45,31 @@ MySQL
 - Public menu endpoints are scoped by restaurant `slug`/QR token, not by authenticated identity.
 
 ### 4. Backend Package Structure (Spring Boot)
+> ⚠️ **CORRECTED in Phase 0 audit** — original doc had wrong package root and flat structure.
+
 ```
-com.restroqr.platform
-├── auth/               # JWT issuance, login, refresh, password reset
-│   ├── controller/
-│   ├── service/
-│   ├── dto/
-│   └── security/       # SecurityConfig, JwtFilter, JwtProvider
-├── users/              # Admin users, roles
-├── restaurants/        # Restaurant profile, super-admin restaurant mgmt
-├── branches/
-├── categories/
-├── menuitems/
-├── offers/
-├── qrcodes/            # QR generation (ZXing), QR metadata
-├── analytics/          # Scan events, aggregation
-├── subscriptions/      # Plans, billing, Razorpay/PayPal webhooks
-├── notifications/      # Email/SMS (optional)
-├── common/
-│   ├── exception/      # GlobalExceptionHandler, ApiError
-│   ├── config/         # CORS, Jackson, OpenAPI
-│   ├── audit/          # Soft-delete + audit log support
-│   └── util/
-└── PlatformApplication.java
+com.restaurantqr.platform            ← actual root (not com.restroqr.platform)
+├── RestaurantQrApplication.java     ← main class (not PlatformApplication)
+├── modules/
+│   ├── auth/                        # JWT issuance, login, refresh, password reset
+│   │   ├── AuthController.java
+│   │   ├── AuthService.java
+│   │   ├── AuthDtos.java
+│   │   ├── CustomUserDetailsService.java
+│   │   └── dto/UserRegistrationDto.java
+│   ├── restaurant/                  # Restaurant profile, super-admin mgmt
+│   ├── branch/
+│   ├── category/
+│   ├── menuitem/
+│   ├── offer/
+│   ├── qr/                          # QR generation (ZXing), QR metadata
+│   └── subscription/                # Plans, billing
+├── users/                           # User entity, repository, management service
+├── analytics/                       # Scan events, aggregation
+├── security/                        # JwtAuthenticationFilter, JwtTokenProvider, JwtUserDetails
+├── config/                          # SecurityConfig, CloudinaryConfig, RateLimitFilter, EmailService
+├── common/                          # BaseEntity, GlobalExceptionHandler, exceptions, ApiResponse
+└── controller/                      # TestComponent (dev artifact — should be removed)
 ```
 
 ### 5. Frontend Folder Structure (Angular)

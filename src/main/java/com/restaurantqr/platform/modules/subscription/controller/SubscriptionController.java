@@ -43,7 +43,7 @@ public class SubscriptionController {
      * by a Razorpay/PayPal webhook after verifying the payment signature.
      */
     @PostMapping("/restaurants/{restaurantId}/activate")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<Subscription>> activate(@PathVariable Long restaurantId,
                                                                @Valid @RequestBody SubscriptionRequest request) {
         return ResponseEntity.ok(ApiResponse.success("Subscription activated",

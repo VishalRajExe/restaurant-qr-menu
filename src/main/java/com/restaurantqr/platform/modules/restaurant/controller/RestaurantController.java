@@ -28,6 +28,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','STAFF','SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<Restaurant>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success(restaurantService.findById(id)));
     }

@@ -60,16 +60,16 @@ spring:
 # to a strong random value (minimum 32 characters recommended).
 jwt:
   secret: ${JWT_SECRET}
-  access-token-expiration: 86400000      # 1 day (ms)
+  access-token-expiration: 900000        # 15 minutes (ms)
   refresh-token-expiration: 604800000    # 7 days (ms)
 
 # ─── Cloudinary ───────────────────────────────────────────────────────────────
 # SECURITY: same as above — this API secret was committed in plaintext. Rotate it
-# in your Cloudinary dashboard and override via CLOUDINARY_API_SECRET going forward.
+# in your Cloudinary dashboard and override via CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME:}
-  api-key: ${CLOUDINARY_API_KEY:158833248977724}
-  api-secret: ${CLOUDINARY_API_SECRET:}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
   folder: restaurant-qr
 
 # ─── QR Code ──────────────────────────────────────────────────────────────────

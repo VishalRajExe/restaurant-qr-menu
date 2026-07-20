@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import com.restaurantqr.platform.modules.auth.dto.UserRegistrationDto;
 import java.util.UUID;
 
 @Slf4j
@@ -54,7 +55,7 @@ public class AuthService {
     // ─── Register (used by Super Admin to create owner accounts) ─────────────
 
     @Transactional
-    public AuthResponse register(RegisterRequest request, User.Role role) {
+    public AuthResponse register(UserRegistrationDto request, User.Role role) {
         if (userRepository.existsByEmailAndIsDeletedFalse(request.email)) {
             throw new ConflictException("An account with this email already exists");
         }

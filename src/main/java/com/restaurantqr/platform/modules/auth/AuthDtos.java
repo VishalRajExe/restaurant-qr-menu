@@ -23,8 +23,6 @@ class RegisterRequest {
     @NotBlank @Size(min = 8, max = 64)
     public String password;
     public String phone;
-    // For creating restaurant owner accounts from super admin panel
-    public Long restaurantId;
 }
 
 class AuthResponse {

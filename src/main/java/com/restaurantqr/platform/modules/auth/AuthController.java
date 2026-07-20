@@ -1,6 +1,7 @@
 package com.restaurantqr.platform.modules.auth;
 
 import com.restaurantqr.platform.common.ApiResponse;
+import com.restaurantqr.platform.modules.auth.dto.UserRegistrationDto;
 import com.restaurantqr.platform.users.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
-        // Public self-registration → RESTAURANT_OWNER role
-        return ResponseEntity.ok(ApiResponse.success("Account created", authService.register(request, User.Role.RESTAURANT_OWNER)));
+    public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody UserRegistrationDto request) {
+        // Public self-registration → STAFF role (no restaurant association)
+        return ResponseEntity.ok(ApiResponse.success("Account created", authService.register(request, User.Role.STAFF)));
     }
 
     @PostMapping("/refresh")

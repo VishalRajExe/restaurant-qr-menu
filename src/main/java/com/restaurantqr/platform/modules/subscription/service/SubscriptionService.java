@@ -25,6 +25,7 @@ public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final RestaurantRepository restaurantRepository;
+    private final com.restaurantqr.platform.modules.restaurant.service.RestaurantService restaurantService;
 
     // Plan pricing (INR / month)
     public static final BigDecimal BASIC_PRICE        = new BigDecimal("999");
@@ -32,10 +33,12 @@ public class SubscriptionService {
     public static final BigDecimal ENTERPRISE_PRICE   = new BigDecimal("7999");
 
     public Optional<Subscription> getActiveSubscription(Long restaurantId) {
+        restaurantService.findById(restaurantId);
         return subscriptionRepository.findActiveSubscription(restaurantId, LocalDate.now());
     }
 
     public List<Subscription> getHistory(Long restaurantId) {
+        restaurantService.findById(restaurantId);
         return subscriptionRepository.findByRestaurantId(restaurantId);
     }
 
@@ -45,8 +48,7 @@ public class SubscriptionService {
      */
     @Transactional
     public Subscription activate(Long restaurantId, SubscriptionRequest request) {
-        var restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", restaurantId));
+        var restaurant = restaurantService.findById(restaurantId);
 
         // Expire current active sub if any
         subscriptionRepository.findActiveSubscription(restaurantId, LocalDate.now())
@@ -83,6 +85,7 @@ public class SubscriptionService {
 
     @Transactional
     public void cancel(Long restaurantId) {
+        restaurantService.findById(restaurantId);
         var sub = subscriptionRepository.findActiveSubscription(restaurantId, LocalDate.now())
                 .orElseThrow(() -> new BadRequestException("No active subscription found"));
         sub.setStatus(Subscription.Status.CANCELLED);

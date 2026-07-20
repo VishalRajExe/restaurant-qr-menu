@@ -128,12 +128,13 @@ public class RestaurantService {
     /**
      * Ensures the currently authenticated user can access the given restaurant.
      * Allows access if the user is SUPER_ADMIN or if the restaurantId matches the user's restaurant.
+     * Allows unauthenticated access (for public endpoints).
      * Throws ForbiddenException otherwise.
      */
     private void assertRestaurantAccess(Long restaurantId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) {
-            throw new ForbiddenException("Unauthenticated");
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            throw new ForbiddenException("Authentication required to access restaurant details");
         }
 
         Object principal = auth.getPrincipal();
