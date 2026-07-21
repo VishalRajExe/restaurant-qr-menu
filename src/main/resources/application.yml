@@ -9,7 +9,7 @@ spring:
 
   # ─── Datasource ───────────────────────────────────────────────────────────────────
   datasource:
-    url: ${DB_URL:jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/restaurant_qr_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:admin}
     hikari:
@@ -26,7 +26,7 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
+        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.MySQLDialect}
         format_sql: true
         use_sql_comments: true
         jdbc:
@@ -38,8 +38,8 @@ spring:
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_PASSWORD:}
+    username: ${MAIL_USERNAME:your_email@gmail.com}
+    password: ${MAIL_PASSWORD:your_app_password}
     properties:
       mail:
         smtp:
@@ -68,9 +68,9 @@ jwt:
 # ─── Cloudinary ───────────────────────────────────────────────────────────────
 # SECURITY: override via CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET in production.
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
-  api-key: ${CLOUDINARY_API_KEY:mock-key}
-  api-secret: ${CLOUDINARY_API_SECRET:mock-secret}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:your_cloud_name}
+  api-key: ${CLOUDINARY_API_KEY:your_api_key}
+  api-secret: ${CLOUDINARY_API_SECRET:your_api_secret}
   folder: restaurant-qr
 
 # ─── QR Code ──────────────────────────────────────────────────────────────────
