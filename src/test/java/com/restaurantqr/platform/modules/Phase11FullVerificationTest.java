@@ -179,7 +179,9 @@ class Phase11FullVerificationTest {
         when(offerRepository.findActiveOffers(100L, LocalDate.now())).thenReturn(List.of(offerA));
         when(qrCodeRepository.findByTokenAndStatus("qr-token-flow-a", QrCode.Status.ACTIVE)).thenReturn(Optional.of(qrCodeA));
         when(qrCodeRepository.save(any(QrCode.class))).thenReturn(qrCodeA);
+        when(subscriptionRepository.save(any(Subscription.class))).thenAnswer(invocation -> invocation.getArgument(0));
     }
+
 
     @Test
     @DisplayName("FLOW A — Super Admin: Stats, Status Update, Owner Account Creation, Subscription Activation")

@@ -10,5 +10,8 @@ public class SubscriptionRequest {
     public Subscription.Plan plan;
     public Integer months;          // default 1
     public String paymentId;        // Razorpay/PayPal order ID
-    public String paymentGateway;   // "RAZORPAY" | "PAYPAL"
+    public String paymentGateway;   // "RAZORPAY" | "STRIPE" | "PAYPAL"
+    public String couponCode;
+    public String gstNumber;
 }
+

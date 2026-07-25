@@ -23,5 +23,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.restaurant.id = :restaurantId AND u.isDeleted = false")
     Page<User> findByRestaurantId(Long restaurantId, Pageable pageable);
 
+    long countByRestaurantIdAndIsDeletedFalse(Long restaurantId);
+
     Optional<User> findByResetTokenAndIsDeletedFalse(String resetToken);
 }
+

@@ -66,18 +66,32 @@ public class Restaurant extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "subscription_plan", nullable = false)
     @Builder.Default
-    private SubscriptionPlan subscriptionPlan = SubscriptionPlan.BASIC;
+    private SubscriptionPlan subscriptionPlan = SubscriptionPlan.STARTER;
+
+    @Column(name = "trial_ends_at")
+    private java.time.LocalDateTime trialEndsAt;
+
+    @Column(name = "is_trial", nullable = false)
+    @Builder.Default
+    private Boolean isTrial = false;
 
     @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Subscription> subscriptions = new ArrayList<>();
 
+    public boolean isTrialActive() {
+        return Boolean.TRUE.equals(isTrial) && trialEndsAt != null && java.time.LocalDateTime.now().isBefore(trialEndsAt);
+    }
+
     public enum Status { ACTIVE, INACTIVE, SUSPENDED }
 
     public enum SubscriptionPlan {
-        BASIC,          // 1 branch, 100 items
-        PROFESSIONAL,   // 5 branches, unlimited items
-        ENTERPRISE      // unlimited everything
+        STARTER,        // 1 branch, 100 menu items, 2 staff, 1 GB storage
+        BASIC,          // Legacy alias for STARTER
+        PROFESSIONAL,   // 5 branches, unlimited menu items, 10 staff, 10 GB storage, custom domain
+        BUSINESS,       // 15 branches, unlimited menu items, 50 staff, 50 GB storage, custom domain, advanced analytics
+        ENTERPRISE      // unlimited branches, menu items, staff, storage, custom domain, API access
     }
 }
+

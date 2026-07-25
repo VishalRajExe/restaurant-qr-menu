@@ -18,6 +18,7 @@ import java.util.List;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final com.restaurantqr.platform.modules.subscription.service.CouponService couponService;
 
     /** Public — plan comparison page */
     @GetMapping("/plans")
@@ -26,16 +27,55 @@ public class SubscriptionController {
     }
 
     @GetMapping("/restaurants/{restaurantId}/active")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN') or hasAuthority('SUBSCRIPTION_VIEW')")
     public ResponseEntity<ApiResponse<Subscription>> getActive(@PathVariable Long restaurantId) {
         var sub = subscriptionService.getActiveSubscription(restaurantId).orElse(null);
         return ResponseEntity.ok(ApiResponse.success(sub));
     }
 
     @GetMapping("/restaurants/{restaurantId}/history")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN') or hasAuthority('SUBSCRIPTION_VIEW')")
     public ResponseEntity<ApiResponse<List<Subscription>>> history(@PathVariable Long restaurantId) {
         return ResponseEntity.ok(ApiResponse.success(subscriptionService.getHistory(restaurantId)));
+    }
+
+    @GetMapping("/restaurants/{restaurantId}/usage-meter")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('SUBSCRIPTION_VIEW')")
+    public ResponseEntity<ApiResponse<com.restaurantqr.platform.modules.subscription.dto.UsageMeterDto>> getUsageMeter(
+            @PathVariable Long restaurantId) {
+        return ResponseEntity.ok(ApiResponse.success(subscriptionService.getUsageMeter(restaurantId)));
+    }
+
+    @GetMapping("/restaurants/{restaurantId}/invoices")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN') or hasAuthority('SUBSCRIPTION_VIEW')")
+    public ResponseEntity<ApiResponse<List<com.restaurantqr.platform.modules.subscription.dto.InvoiceDto>>> getInvoices(
+            @PathVariable Long restaurantId) {
+        return ResponseEntity.ok(ApiResponse.success(subscriptionService.getInvoices(restaurantId)));
+    }
+
+    @PostMapping("/restaurants/{restaurantId}/apply-coupon")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN')")
+    public ResponseEntity<ApiResponse<com.restaurantqr.platform.modules.subscription.service.CouponService.CouponValidationResponse>> applyCoupon(
+            @PathVariable Long restaurantId,
+            @RequestParam String code,
+            @RequestParam java.math.BigDecimal amount) {
+        return ResponseEntity.ok(ApiResponse.success(couponService.validateCoupon(code, amount)));
+    }
+
+    @PatchMapping("/restaurants/{restaurantId}/auto-renew")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> setAutoRenew(
+            @PathVariable Long restaurantId,
+            @RequestParam boolean autoRenew) {
+        subscriptionService.setAutoRenew(restaurantId, autoRenew);
+        return ResponseEntity.ok(ApiResponse.success("Auto-renew updated", null));
+    }
+
+    @PostMapping("/coupons")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<ApiResponse<com.restaurantqr.platform.modules.subscription.entity.Coupon>> createCoupon(
+            @Valid @RequestBody com.restaurantqr.platform.modules.subscription.service.CouponService.CouponRequest request) {
+        return ResponseEntity.ok(ApiResponse.success("Coupon created", couponService.createCoupon(request)));
     }
 
     /**
@@ -57,3 +97,4 @@ public class SubscriptionController {
         return ResponseEntity.ok(ApiResponse.success("Subscription cancelled", null));
     }
 }
+

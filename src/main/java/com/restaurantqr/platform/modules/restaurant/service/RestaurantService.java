@@ -28,6 +28,8 @@ public class RestaurantService {
     private final BranchRepository branchRepository;
     private final MenuItemRepository menuItemRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final com.restaurantqr.platform.users.repository.UserRepository userRepository;
+
 
     public Restaurant findById(Long id) {
         Restaurant restaurant = repository.findById(id)
@@ -63,6 +65,9 @@ public class RestaurantService {
                 .country(request.country)
                 .websiteUrl(request.websiteUrl)
                 .primaryColor(request.primaryColor != null ? request.primaryColor : "#FF6B35")
+                .isTrial(true)
+                .trialEndsAt(java.time.LocalDateTime.now().plusDays(14))
+                .subscriptionPlan(Restaurant.SubscriptionPlan.STARTER)
                 .build();
 
         return repository.save(restaurant);
@@ -103,25 +108,43 @@ public class RestaurantService {
 
     public void assertBranchLimit(Long restaurantId) {
         var plan = findById(restaurantId).getSubscriptionPlan();
-        if (plan == Restaurant.SubscriptionPlan.BASIC) {
+        if (plan == Restaurant.SubscriptionPlan.STARTER || plan == Restaurant.SubscriptionPlan.BASIC) {
             long count = branchRepository.countByRestaurantIdAndIsDeletedFalse(restaurantId);
             if (count >= 1) throw new SubscriptionLimitException(
-                    "Your BASIC plan allows 1 branch. Upgrade to Professional for more.");
+                    "Your STARTER plan allows 1 branch. Upgrade to Professional for more.");
         } else if (plan == Restaurant.SubscriptionPlan.PROFESSIONAL) {
             long count = branchRepository.countByRestaurantIdAndIsDeletedFalse(restaurantId);
             if (count >= 5) throw new SubscriptionLimitException(
-                    "Your PROFESSIONAL plan allows 5 branches. Upgrade to Enterprise for more.");
+                    "Your PROFESSIONAL plan allows 5 branches. Upgrade to Business for more.");
+        } else if (plan == Restaurant.SubscriptionPlan.BUSINESS) {
+            long count = branchRepository.countByRestaurantIdAndIsDeletedFalse(restaurantId);
+            if (count >= 15) throw new SubscriptionLimitException(
+                    "Your BUSINESS plan allows 15 branches. Upgrade to Enterprise for unlimited.");
         }
     }
 
     public void assertMenuItemLimit(Long restaurantId) {
         var plan = findById(restaurantId).getSubscriptionPlan();
-        if (plan == Restaurant.SubscriptionPlan.BASIC) {
+        if (plan == Restaurant.SubscriptionPlan.STARTER || plan == Restaurant.SubscriptionPlan.BASIC) {
             long count = menuItemRepository.countByRestaurantIdAndIsDeletedFalse(restaurantId);
             if (count >= 100) throw new SubscriptionLimitException(
-                    "Your BASIC plan allows 100 menu items. Upgrade to Professional for unlimited.");
+                    "Your STARTER plan allows 100 menu items. Upgrade to Professional for unlimited.");
         }
     }
+
+    public void assertStaffUserLimit(Long restaurantId) {
+        var plan = findById(restaurantId).getSubscriptionPlan();
+        long count = userRepository.countByRestaurantIdAndIsDeletedFalse(restaurantId);
+
+        if ((plan == Restaurant.SubscriptionPlan.STARTER || plan == Restaurant.SubscriptionPlan.BASIC) && count >= 2) {
+            throw new SubscriptionLimitException("Your STARTER plan allows max 2 staff users. Upgrade for more.");
+        } else if (plan == Restaurant.SubscriptionPlan.PROFESSIONAL && count >= 10) {
+            throw new SubscriptionLimitException("Your PROFESSIONAL plan allows max 10 staff users. Upgrade for more.");
+        } else if (plan == Restaurant.SubscriptionPlan.BUSINESS && count >= 50) {
+            throw new SubscriptionLimitException("Your BUSINESS plan allows max 50 staff users. Upgrade to Enterprise.");
+        }
+    }
+
 
     // ─── Access Control ───────────────────────────────────────────────────────
 

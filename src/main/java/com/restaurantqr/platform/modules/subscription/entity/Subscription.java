@@ -51,7 +51,28 @@ public class Subscription extends BaseEntity {
     private String paymentId;   // Razorpay/PayPal order ID
 
     @Column(name = "payment_gateway", length = 30)
-    private String paymentGateway;   // "RAZORPAY" | "PAYPAL"
+    private String paymentGateway;   // "RAZORPAY" | "STRIPE" | "PAYPAL"
+
+    @Column(name = "invoice_number", length = 100)
+    private String invoiceNumber;
+
+    @Column(name = "gst_number", length = 50)
+    private String gstNumber;
+
+    @Column(name = "tax_amount", precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal taxAmount = BigDecimal.ZERO;
+
+    @Column(name = "discount_amount", precision = 10, scale = 2)
+    @Builder.Default
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+
+    @Column(name = "coupon_code", length = 50)
+    private String couponCode;
+
+    @Column(name = "auto_renew", nullable = false)
+    @Builder.Default
+    private Boolean autoRenew = true;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -63,10 +84,13 @@ public class Subscription extends BaseEntity {
     }
 
     public enum Plan {
-        BASIC,          // 1 branch, 100 items
-        PROFESSIONAL,   // 5 branches, unlimited items
-        ENTERPRISE      // unlimited
+        STARTER,
+        BASIC,
+        PROFESSIONAL,
+        BUSINESS,
+        ENTERPRISE
     }
 
     public enum Status { ACTIVE, EXPIRED, CANCELLED, PENDING }
 }
+

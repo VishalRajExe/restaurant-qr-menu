@@ -11,9 +11,12 @@ import java.util.List;
 @Repository
 public interface ScanEventRepository extends JpaRepository<ScanEvent, Long> {
 
+    long countByRestaurantId(Long restaurantId);
+
     long countByRestaurantIdAndCreatedAtBetween(Long restaurantId,
                                                 LocalDateTime from,
                                                 LocalDateTime to);
+
 
     @Query("SELECT FUNCTION('DATE', s.createdAt) as scanDate, COUNT(s) as count " +
            "FROM ScanEvent s WHERE s.restaurant.id = :restaurantId " +
