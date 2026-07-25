@@ -22,6 +22,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final RestaurantService restaurantService;
+    private final com.restaurantqr.platform.audit.service.AuditLogService auditLogService;
 
     public List<Category> findByRestaurant(Long restaurantId) {
         restaurantService.findById(restaurantId);
@@ -58,18 +59,23 @@ public class CategoryService {
                 .displayOrder(request.displayOrder != null ? request.displayOrder : 0)
                 .build();
 
-        return categoryRepository.save(category);
+        Category saved = categoryRepository.save(category);
+        auditLogService.log(restaurantId, "CATEGORY_CREATED", "Category", saved.getId(), null, saved.getName());
+        return saved;
     }
 
     @Transactional
     public Category update(Long id, Long restaurantId, CategoryRequest request) {
         var category = findById(id, restaurantId);
+        String oldName = category.getName();
 
         category.setName(request.name);
         category.setDescription(request.description);
         if (request.displayOrder != null) category.setDisplayOrder(request.displayOrder);
 
-        return categoryRepository.save(category);
+        Category updated = categoryRepository.save(category);
+        auditLogService.log(restaurantId, "CATEGORY_UPDATED", "Category", updated.getId(), oldName, updated.getName());
+        return updated;
     }
 
     @Transactional
@@ -106,6 +112,19 @@ public class CategoryService {
         var category = findById(id, restaurantId);
         category.softDelete();
         categoryRepository.save(category);
+        auditLogService.log(restaurantId, "CATEGORY_DELETED", "Category", category.getId(), category.getName(), "DELETED");
+    }
+
+    @Transactional
+    public Category restore(Long id, Long restaurantId) {
+        restaurantService.findById(restaurantId);
+        var category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", id));
+        assertOwnership(category, restaurantId);
+        category.restore();
+        Category restored = categoryRepository.save(category);
+        auditLogService.log(restaurantId, "CATEGORY_RESTORED", "Category", restored.getId(), "DELETED", restored.getName());
+        return restored;
     }
 
     private void assertOwnership(Category category, Long restaurantId) {
@@ -114,3 +133,4 @@ public class CategoryService {
         }
     }
 }
+

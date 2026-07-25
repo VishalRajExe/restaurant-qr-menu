@@ -23,6 +23,7 @@ public class MenuItemService {
     private final MenuItemRepository menuItemRepository;
     private final CategoryRepository categoryRepository;
     private final RestaurantService restaurantService;
+    private final com.restaurantqr.platform.audit.service.AuditLogService auditLogService;
 
     // ─── Public menu (no auth) ────────────────────────────────────────────────
 
@@ -52,7 +53,7 @@ public class MenuItemService {
                 .name(request.name)
                 .description(request.description)
                 .price(request.price)
-                .vegNonveg(request.vegNonveg)
+                .vegNonveg(request.vegNonveg != null ? request.vegNonveg : MenuItem.FoodType.NON_VEG)
                 .isAvailable(request.isAvailable != null ? request.isAvailable : true)
                 .isFeatured(request.isFeatured != null ? request.isFeatured : false)
                 .calories(request.calories)
@@ -61,7 +62,9 @@ public class MenuItemService {
                 .tags(request.tags)
                 .build();
 
-        return menuItemRepository.save(item);
+        MenuItem saved = menuItemRepository.save(item);
+        auditLogService.log(restaurantId, "MENU_ITEM_CREATED", "MenuItem", saved.getId(), null, saved.getName() + " (₹" + saved.getPrice() + ")");
+        return saved;
     }
 
     @Transactional
@@ -75,6 +78,9 @@ public class MenuItemService {
             item.setCategory(category);
         }
 
+        BigDecimal oldPrice = item.getPrice();
+        String oldName = item.getName();
+
         item.setName(request.name);
         item.setDescription(request.description);
         item.setPrice(request.price);
@@ -86,14 +92,26 @@ public class MenuItemService {
         if (request.displayOrder != null) item.setDisplayOrder(request.displayOrder);
         item.setTags(request.tags);
 
-        return menuItemRepository.save(item);
+        MenuItem updated = menuItemRepository.save(item);
+
+        if (oldPrice != null && request.price != null && oldPrice.compareTo(request.price) != 0) {
+            auditLogService.log(restaurantId, "ITEM_PRICE_CHANGED", "MenuItem", updated.getId(),
+                    "₹" + oldPrice, "₹" + updated.getPrice());
+        } else {
+            auditLogService.log(restaurantId, "MENU_ITEM_UPDATED", "MenuItem", updated.getId(), oldName, updated.getName());
+        }
+
+        return updated;
     }
 
     @Transactional
     public void updateAvailability(Long id, Long restaurantId, boolean available) {
         var item = findByIdAndRestaurant(id, restaurantId);
+        boolean oldAvailability = item.getIsAvailable();
         item.setIsAvailable(available);
         menuItemRepository.save(item);
+        auditLogService.log(restaurantId, "ITEM_AVAILABILITY_CHANGED", "MenuItem", item.getId(),
+                String.valueOf(oldAvailability), String.valueOf(available));
     }
 
     @Transactional
@@ -108,6 +126,21 @@ public class MenuItemService {
         var item = findByIdAndRestaurant(id, restaurantId);
         item.softDelete();
         menuItemRepository.save(item);
+        auditLogService.log(restaurantId, "MENU_ITEM_DELETED", "MenuItem", item.getId(), item.getName(), "DELETED");
+    }
+
+    @Transactional
+    public MenuItem restore(Long id, Long restaurantId) {
+        restaurantService.findById(restaurantId);
+        var item = menuItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("MenuItem", id));
+        if (!item.getRestaurant().getId().equals(restaurantId)) {
+            throw new ForbiddenException("This menu item does not belong to your restaurant");
+        }
+        item.restore();
+        MenuItem restored = menuItemRepository.save(item);
+        auditLogService.log(restaurantId, "MENU_ITEM_RESTORED", "MenuItem", restored.getId(), "DELETED", restored.getName());
+        return restored;
     }
 
     public List<MenuItem> getByCategory(Long categoryId, Long restaurantId) {
@@ -130,4 +163,5 @@ public class MenuItemService {
                 .orElseThrow(() -> new ResourceNotFoundException("MenuItem", id));
     }
 }
+
 

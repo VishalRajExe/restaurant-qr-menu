@@ -43,9 +43,25 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success("Password reset successfully", null));
     }
 
+    private final com.restaurantqr.platform.users.service.StaffInvitationService staffInvitationService;
+
     @PostMapping("/change-password")
     public ResponseEntity<ApiResponse<Void>> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         authService.changePassword(request);
         return ResponseEntity.ok(ApiResponse.success("Password changed successfully", null));
     }
+
+    @GetMapping("/invitations/{token}")
+    public ResponseEntity<ApiResponse<com.restaurantqr.platform.users.service.StaffInvitationService.InvitationResponse>> getInvitation(
+            @PathVariable String token) {
+        return ResponseEntity.ok(ApiResponse.success(staffInvitationService.getInvitationByToken(token)));
+    }
+
+    @PostMapping("/invitations/accept")
+    public ResponseEntity<ApiResponse<User>> acceptInvitation(
+            @Valid @RequestBody com.restaurantqr.platform.users.service.StaffInvitationService.AcceptInvitationRequest request) {
+        return ResponseEntity.ok(ApiResponse.success("Invitation accepted successfully",
+                staffInvitationService.acceptInvitation(request)));
+    }
 }
+

@@ -56,7 +56,7 @@ public class MenuItemController {
     }
 
     @PostMapping("/restaurants/{restaurantId}/menu-items")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('MENU_CREATE')")
     public ResponseEntity<ApiResponse<MenuItem>> create(
             @PathVariable Long restaurantId,
             @Valid @RequestBody MenuItemRequest request) {
@@ -65,7 +65,7 @@ public class MenuItemController {
     }
 
     @PutMapping("/restaurants/{restaurantId}/menu-items/{id}")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('MENU_EDIT')")
     public ResponseEntity<ApiResponse<MenuItem>> update(
             @PathVariable Long restaurantId,
             @PathVariable Long id,
@@ -74,7 +74,7 @@ public class MenuItemController {
     }
 
     @PatchMapping("/restaurants/{restaurantId}/menu-items/{id}/availability")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','STAFF','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','STAFF','SUPER_ADMIN') or hasAuthority('MENU_EDIT')")
     public ResponseEntity<ApiResponse<Void>> toggleAvailability(
             @PathVariable Long restaurantId,
             @PathVariable Long id,
@@ -84,11 +84,20 @@ public class MenuItemController {
     }
 
     @DeleteMapping("/restaurants/{restaurantId}/menu-items/{id}")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('MENU_DELETE')")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long restaurantId,
             @PathVariable Long id) {
         menuItemService.delete(id, restaurantId);
         return ResponseEntity.ok(ApiResponse.success("Menu item deleted", null));
     }
+
+    @PostMapping("/restaurants/{restaurantId}/menu-items/{id}/restore")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('MENU_CREATE')")
+    public ResponseEntity<ApiResponse<MenuItem>> restore(
+            @PathVariable Long restaurantId,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success("Menu item restored", menuItemService.restore(id, restaurantId)));
+    }
 }
+

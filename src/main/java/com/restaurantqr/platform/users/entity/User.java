@@ -67,8 +67,35 @@ public class User extends BaseEntity {
         SUPER_ADMIN,
         RESTAURANT_OWNER,
         MANAGER,
-        STAFF
+        STAFF;
+
+        public java.util.Set<Permission> getPermissions() {
+            switch (this) {
+                case SUPER_ADMIN:
+                case RESTAURANT_OWNER:
+                    return java.util.EnumSet.allOf(Permission.class);
+                case MANAGER:
+                    return java.util.EnumSet.of(
+                            Permission.MENU_CREATE,
+                            Permission.MENU_EDIT,
+                            Permission.MENU_DELETE,
+                            Permission.CATEGORY_MANAGE,
+                            Permission.QR_MANAGE,
+                            Permission.ANALYTICS_VIEW,
+                            Permission.REPORT_EXPORT,
+                            Permission.SETTINGS_EDIT
+                    );
+                case STAFF:
+                    return java.util.EnumSet.of(
+                            Permission.MENU_EDIT,
+                            Permission.QR_MANAGE
+                    );
+                default:
+                    return java.util.Collections.emptySet();
+            }
+        }
     }
+
 
     public enum Status {
         ACTIVE,

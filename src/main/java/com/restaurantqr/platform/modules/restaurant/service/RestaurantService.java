@@ -131,7 +131,7 @@ public class RestaurantService {
      * Allows unauthenticated access (for public endpoints).
      * Throws ForbiddenException otherwise.
      */
-    private void assertRestaurantAccess(Long restaurantId) {
+    public void assertRestaurantAccess(Long restaurantId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
             throw new ForbiddenException("Authentication required to access restaurant details");

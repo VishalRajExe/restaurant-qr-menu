@@ -32,8 +32,18 @@ public class JwtUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+        java.util.List<GrantedAuthority> authorities = new java.util.ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+        try {
+            User.Role userRole = User.Role.valueOf(role);
+            for (com.restaurantqr.platform.users.entity.Permission permission : userRole.getPermissions()) {
+                authorities.add(new SimpleGrantedAuthority(permission.name()));
+            }
+        } catch (Exception ignored) {
+        }
+        return authorities;
     }
+
 
     @Override public String getPassword() { return password; }
     @Override public String getUsername() { return email; }

@@ -2,9 +2,11 @@ package com.restaurantqr.platform.users.controller;
 
 import com.restaurantqr.platform.common.ApiResponse;
 import com.restaurantqr.platform.users.entity.User;
+import com.restaurantqr.platform.users.service.StaffInvitationService;
 import com.restaurantqr.platform.users.service.StaffUserRequest;
 import com.restaurantqr.platform.users.service.UpdateProfileRequest;
 import com.restaurantqr.platform.users.service.UserManagementService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -66,11 +68,32 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Status toggled", null));
     }
 
+    private final StaffInvitationService staffInvitationService;
+
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN') or hasAuthority('STAFF_MANAGE')")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long restaurantId,
                                                      @PathVariable Long id) {
         userManagementService.delete(id, restaurantId);
         return ResponseEntity.ok(ApiResponse.success("User removed", null));
     }
+
+    @PostMapping("/invite")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN') or hasAuthority('STAFF_MANAGE')")
+    public ResponseEntity<ApiResponse<StaffInvitationService.InvitationResponse>> invite(
+            @PathVariable Long restaurantId,
+            @Valid @RequestBody StaffInvitationService.InviteRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Staff invitation issued",
+                        staffInvitationService.createInvitation(restaurantId, request)));
+    }
+
+    @GetMapping("/invitations")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('STAFF_MANAGE')")
+    public ResponseEntity<ApiResponse<java.util.List<StaffInvitationService.InvitationResponse>>> getInvitations(
+            @PathVariable Long restaurantId) {
+        return ResponseEntity.ok(ApiResponse.success(staffInvitationService.getPendingInvitations(restaurantId)));
+    }
 }
+
+

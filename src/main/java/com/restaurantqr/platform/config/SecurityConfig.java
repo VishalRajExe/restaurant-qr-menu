@@ -50,6 +50,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
+    private final RateLimitingFilter rateLimitingFilter;
 
     @Value("${app.frontend-url}")
     private String frontendUrl;
@@ -72,6 +73,7 @@ public class SecurityConfig {
             "/auth/refresh",
             "/auth/forgot-password",
             "/auth/reset-password",
+            "/auth/invitations/**",
             "/public/**",
             "/actuator/health",
             "/actuator/info",
@@ -84,9 +86,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(loggingFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(securityHeadersFilter(), UsernamePasswordAuthenticationFilter.class)
+
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

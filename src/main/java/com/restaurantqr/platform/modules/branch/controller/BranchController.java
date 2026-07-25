@@ -56,4 +56,12 @@ public class BranchController {
         branchService.delete(id, restaurantId);
         return ResponseEntity.ok(ApiResponse.success("Branch deleted", null));
     }
+
+    @PostMapping("/{id}/restore")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','SUPER_ADMIN')")
+    public ResponseEntity<ApiResponse<Branch>> restore(@PathVariable Long restaurantId,
+                                                         @PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success("Branch restored", branchService.restore(id, restaurantId)));
+    }
 }
+

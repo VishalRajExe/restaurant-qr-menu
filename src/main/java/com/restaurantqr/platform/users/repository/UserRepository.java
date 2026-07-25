@@ -15,7 +15,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmailAndIsDeletedFalse(String email);
 
+    boolean existsByEmail(String email);
+
     boolean existsByEmailAndIsDeletedFalse(String email);
+
 
     @Query("SELECT u FROM User u WHERE u.restaurant.id = :restaurantId AND u.isDeleted = false")
     Page<User> findByRestaurantId(Long restaurantId, Pageable pageable);

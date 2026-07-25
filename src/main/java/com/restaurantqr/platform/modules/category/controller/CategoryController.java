@@ -92,10 +92,18 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('CATEGORY_MANAGE')")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long restaurantId,
                                                      @PathVariable Long id) {
         categoryService.delete(id, restaurantId);
         return ResponseEntity.ok(ApiResponse.success("Category deleted", null));
     }
+
+    @PostMapping("/{id}/restore")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('CATEGORY_MANAGE')")
+    public ResponseEntity<ApiResponse<Category>> restore(@PathVariable Long restaurantId,
+                                                           @PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success("Category restored", categoryService.restore(id, restaurantId)));
+    }
 }
+

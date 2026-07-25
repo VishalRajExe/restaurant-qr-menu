@@ -30,16 +30,11 @@ public class RestaurantQrApplication {
     CommandLineRunner seedSuperAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             String superAdminEmail = "admin@restaurantqr.com";
+            String envPassword = System.getenv("ADMIN_PASSWORD");
+            String password = (envPassword != null && !envPassword.isBlank()) ? envPassword : "Admin@12345";
 
-            if (!userRepository.existsByEmailAndIsDeletedFalse(superAdminEmail)) {
-                String envPassword = System.getenv("ADMIN_PASSWORD");
-                String password;
-                boolean generated = false;
-                if (envPassword != null && !envPassword.isBlank()) {
-                    password = envPassword;
-                } else {
-                    password = "AdminPassword123!";
-                }
+            var existingAdmin = userRepository.findByEmailAndIsDeletedFalse(superAdminEmail);
+            if (existingAdmin.isEmpty()) {
                 var admin = User.builder()
                         .name("Super Admin")
                         .email(superAdminEmail)
@@ -51,13 +46,13 @@ public class RestaurantQrApplication {
                 userRepository.save(admin);
                 log.info("========================================================");
                 log.info("  Super Admin seeded: {}", superAdminEmail);
-                if (generated) {
-                    log.info("  Generated password: {}", password);
-                    log.info("  Please change the password after first login!");
-                }
+                log.info("  Default password:   {}", password);
                 log.info("========================================================");
             } else {
-                log.info("Super Admin already exists — skipping seed.");
+                User admin = existingAdmin.get();
+                admin.setPassword(passwordEncoder.encode(password));
+                userRepository.save(admin);
+                log.info("Super Admin password synchronized on boot: {}", superAdminEmail);
             }
         };
     }

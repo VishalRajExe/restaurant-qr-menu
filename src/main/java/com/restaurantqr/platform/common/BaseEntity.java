@@ -34,8 +34,24 @@ public abstract class BaseEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Column(name = "deleted_by", length = 100)
+    private String deletedBy;
+
+
     public void softDelete() {
+        softDelete(null);
+    }
+
+    public void softDelete(String deletedBy) {
         this.isDeleted = true;
         this.deletedAt = LocalDateTime.now();
+        this.deletedBy = deletedBy;
+    }
+
+    public void restore() {
+        this.isDeleted = false;
+        this.deletedAt = null;
+        this.deletedBy = null;
     }
 }
+
