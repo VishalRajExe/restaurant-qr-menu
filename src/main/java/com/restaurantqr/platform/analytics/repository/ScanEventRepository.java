@@ -29,8 +29,25 @@ public interface ScanEventRepository extends JpaRepository<ScanEvent, Long> {
            "AND s.createdAt >= :from GROUP BY s.deviceType")
     List<Object[]> countByDeviceType(Long restaurantId, LocalDateTime from);
 
+    @Query("SELECT COUNT(DISTINCT s.ipAddress) FROM ScanEvent s " +
+           "WHERE s.restaurant.id = :restaurantId AND s.createdAt >= :from AND s.createdAt <= :to")
+    long countUniqueVisitors(Long restaurantId, LocalDateTime from, LocalDateTime to);
+
+    @Query("SELECT FUNCTION('HOUR', s.createdAt) as hour, COUNT(s) as count " +
+           "FROM ScanEvent s WHERE s.restaurant.id = :restaurantId " +
+           "AND s.createdAt >= :from GROUP BY FUNCTION('HOUR', s.createdAt) " +
+           "ORDER BY hour ASC")
+    List<Object[]> countHourlyScans(Long restaurantId, LocalDateTime from);
+
     @Query("SELECT s.qrCode.id, COUNT(s) FROM ScanEvent s " +
            "WHERE s.restaurant.id = :restaurantId " +
            "AND s.createdAt >= :from GROUP BY s.qrCode.id ORDER BY COUNT(s) DESC")
     List<Object[]> topQrCodes(Long restaurantId, LocalDateTime from);
+
+    @Query("SELECT s.qrCode.branch.name, COUNT(s) FROM ScanEvent s " +
+           "WHERE s.restaurant.id = :restaurantId " +
+           "AND s.createdAt >= :from GROUP BY s.qrCode.branch.name ORDER BY COUNT(s) DESC")
+    List<Object[]> topBranches(Long restaurantId, LocalDateTime from);
 }
+
+

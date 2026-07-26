@@ -50,5 +50,6 @@ public class ScanEvent {
     @Column(name = "country", length = 60)
     private String country;
 
-    public enum DeviceType { MOBILE, TABLET, DESKTOP, UNKNOWN }
+    public enum DeviceType { ANDROID, IPHONE, MOBILE, TABLET, DESKTOP, UNKNOWN }
 }
+

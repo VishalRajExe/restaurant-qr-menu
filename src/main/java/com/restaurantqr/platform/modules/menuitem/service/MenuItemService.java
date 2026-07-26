@@ -36,6 +36,12 @@ public class MenuItemService {
         return menuItemRepository.searchMenu(restaurantId, search, foodType, pageable);
     }
 
+    public List<MenuItem> searchPublicMenu(Long restaurantId, String search, MenuItem.FoodType foodType) {
+        Page<MenuItem> page = menuItemRepository.searchMenu(restaurantId, search, foodType, Pageable.unpaged());
+        return page.getContent();
+    }
+
+
     // ─── Admin CRUD ───────────────────────────────────────────────────────────
 
     @Transactional

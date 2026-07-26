@@ -15,9 +15,17 @@ public class AnalyticsController {
     private final AnalyticsService analyticsService;
 
     @GetMapping("/restaurants/{restaurantId}/dashboard")
-    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN')")
-    public ResponseEntity<ApiResponse<AnalyticsService.DashboardStats>> dashboard(
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('ANALYTICS_VIEW')")
+    public ResponseEntity<ApiResponse<com.restaurantqr.platform.analytics.dto.RestaurantDashboardResponse>> dashboard(
+            @PathVariable Long restaurantId) {
+        return ResponseEntity.ok(ApiResponse.success(analyticsService.getRestaurantDashboard(restaurantId)));
+    }
+
+    @GetMapping("/restaurants/{restaurantId}/summary")
+    @PreAuthorize("hasAnyRole('RESTAURANT_OWNER','MANAGER','SUPER_ADMIN') or hasAuthority('ANALYTICS_VIEW')")
+    public ResponseEntity<ApiResponse<AnalyticsService.DashboardStats>> summary(
             @PathVariable Long restaurantId) {
         return ResponseEntity.ok(ApiResponse.success(analyticsService.getDashboardStats(restaurantId)));
     }
 }
+

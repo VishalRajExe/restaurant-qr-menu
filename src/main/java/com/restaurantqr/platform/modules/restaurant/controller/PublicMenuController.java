@@ -90,6 +90,16 @@ public class PublicMenuController {
         return ResponseEntity.ok(ApiResponse.success(payload));
     }
 
+    @GetMapping("/restaurants/{restaurantId}/search")
+    public ResponseEntity<ApiResponse<List<MenuItem>>> searchPublicMenu(
+            @PathVariable Long restaurantId,
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) MenuItem.FoodType vegNonveg) {
+        analyticsService.recordSearch(restaurantId, q);
+        return ResponseEntity.ok(ApiResponse.success(menuItemService.searchPublicMenu(restaurantId, q, vegNonveg)));
+    }
+
+
     // ─── Response Payload
     @Data
     @Builder
