@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "Restaurant QR Menu SaaS API",
-    "_postman_id": "restaurant-qr-menu-postman-collection",
-    "description": "Complete API collection for the Restaurant QR Menu SaaS platform.\n\n**Setup:**\n1. Import this collection\n2. Import the accompanying Environment file\n3. Run **Login** to auto-populate `accessToken` and `refreshToken`",
+    "name": "Restaurant QR Menu SaaS API - Complete 12-Phase Collection",
+    "_postman_id": "restaurant-qr-menu-postman-collection-v2",
+    "description": "Complete API collection for the Restaurant QR Menu SaaS platform covering all 12 Phases.\n\n**Setup Instructions:**\n1. Import this collection and the accompanying Environment file (`Restaurant_QR_Menu_Env.postman_environment.json`).\n2. Execute **01 - Authentication -> Login** to automatically save `accessToken`, `refreshToken`, and `restaurantId` to the environment.\n3. Test endpoints across all 12 platform modules.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -20,20 +20,20 @@
       "name": "01 - Authentication",
       "item": [
         {
-          "name": "Register User / Owner",
+          "name": "Register Owner",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"John Owner\",\n  \"email\": \"owner@example.com\",\n  \"password\": \"Password123!\",\n  \"phone\": \"+1234567890\"\n}",
+              "raw": "{\n  \"name\": \"John Owner\",\n  \"email\": \"owner@example.com\",\n  \"password\": \"Password123!\",\n  \"phone\": \"+919876543210\"\n}",
               "options": { "raw": { "language": "json" } }
             }
           }
         },
         {
-          "name": "Login",
+          "name": "Login Owner",
           "event": [
             {
               "listen": "test",
@@ -44,7 +44,6 @@
                   "  if (json.data.accessToken) {",
                   "    pm.environment.set('accessToken', json.data.accessToken);",
                   "    pm.environment.set('refreshToken', json.data.refreshToken);",
-                  "    console.log('Tokens saved to environment');",
                   "  }",
                   "  if (json.data.restaurantId) {",
                   "    pm.environment.set('restaurantId', json.data.restaurantId);",
@@ -67,19 +66,18 @@
           }
         },
         {
-          "name": "Login (Super Admin)",
+          "name": "Login Super Admin",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
                   "const json = pm.response.json();",
-                  "if (json && json.data) {",
-                  "  if (json.data.accessToken) {",
-                  "    pm.environment.set('accessToken', json.data.accessToken);",
-                  "    pm.environment.set('refreshToken', json.data.refreshToken);",
-                  "    console.log('Super Admin tokens saved');",
-                  "  }",
+                  "if (json && json.data && json.data.accessToken) {",
+                  "  pm.environment.set('accessToken', json.data.accessToken);",
+                  "}",
+                  "if (json && json.data && json.data.restaurantId) {",
+                  "  pm.environment.set('restaurantId', json.data.restaurantId);",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -109,73 +107,12 @@
               "options": { "raw": { "language": "json" } }
             }
           }
-        },
-        {
-          "name": "Forgot Password",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["auth", "forgot-password"] },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"owner@example.com\"\n}",
-              "options": { "raw": { "language": "json" } }
-            }
-          }
-        },
-        {
-          "name": "Reset Password",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/auth/reset-password", "host": ["{{baseUrl}}"], "path": ["auth", "reset-password"] },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"token\": \"sample-reset-token\",\n  \"newPassword\": \"NewPassword123!\"\n}",
-              "options": { "raw": { "language": "json" } }
-            }
-          }
-        },
-        {
-          "name": "Change Password",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/auth/change-password", "host": ["{{baseUrl}}"], "path": ["auth", "change-password"] },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"currentPassword\": \"Password123!\",\n  \"newPassword\": \"NewPassword123!\"\n}",
-              "options": { "raw": { "language": "json" } }
-            }
-          }
         }
       ]
     },
     {
-      "name": "02 - Restaurants",
+      "name": "02 - Restaurant & Branches",
       "item": [
-        {
-          "name": "Get All Restaurants",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/restaurants", "host": ["{{baseUrl}}"], "path": ["restaurants"] }
-          }
-        },
-        {
-          "name": "Get Restaurant By ID",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}"] }
-          }
-        },
-        {
-          "name": "Get Restaurant By Slug (Public)",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/restaurants/slug/{{restaurantSlug}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "slug", "{{restaurantSlug}}"] }
-          }
-        },
         {
           "name": "Create Restaurant",
           "request": {
@@ -184,41 +121,16 @@
             "url": { "raw": "{{baseUrl}}/restaurants", "host": ["{{baseUrl}}"], "path": ["restaurants"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Winged Bistro\",\n  \"slug\": \"winged-bistro\",\n  \"description\": \"Artisanal Coffee & Bistro\",\n  \"phone\": \"+1234567890\",\n  \"email\": \"contact@wingedbistro.com\",\n  \"address\": \"123 Main Street\"\n}",
+              "raw": "{\n  \"name\": \"Gourmet Bistro\",\n  \"slug\": \"gourmet-bistro\",\n  \"address\": \"123 Tech Park, Bangalore\",\n  \"phone\": \"+919876543210\"\n}",
               "options": { "raw": { "language": "json" } }
             }
           }
         },
         {
-          "name": "Update Restaurant",
-          "request": {
-            "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}"] },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Winged Diner Updated\",\n  \"description\": \"Updated Description\",\n  \"phone\": \"+1987654321\",\n  \"email\": \"info@wingeddiner.com\",\n  \"address\": \"456 Market St\"\n}",
-              "options": { "raw": { "language": "json" } }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "03 - Branches",
-      "item": [
-        {
-          "name": "Get All Branches",
+          "name": "Get Restaurant Profile",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/branches", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "branches"] }
-          }
-        },
-        {
-          "name": "Get Branch By ID",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/branches/{{branchId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "branches", "{{branchId}}"] }
+            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}"] }
           }
         },
         {
@@ -226,145 +138,59 @@
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/branches", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "branches"] },
+            "url": { "raw": "{{baseUrl}}/branches/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["branches", "restaurants", "{{restaurantId}}"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Downtown Branch\",\n  \"address\": \"100 Broad St\",\n  \"phone\": \"+1555123456\",\n  \"city\": \"Metropolis\"\n}",
+              "raw": "{\n  \"name\": \"Downtown Flagship Branch\",\n  \"address\": \"MG Road, Bangalore\",\n  \"phone\": \"+919876543211\",\n  \"isDefault\": true\n}",
               "options": { "raw": { "language": "json" } }
             }
-          }
-        },
-        {
-          "name": "Update Branch",
-          "request": {
-            "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/branches/{{branchId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "branches", "{{branchId}}"] },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Downtown Branch Flagship\",\n  \"address\": \"100 Broad St Suite A\",\n  \"phone\": \"+1555123456\"\n}",
-              "options": { "raw": { "language": "json" } }
-            }
-          }
-        },
-        {
-          "name": "Delete Branch",
-          "request": {
-            "method": "DELETE",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/branches/{{branchId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "branches", "{{branchId}}"] }
           }
         }
       ]
     },
     {
-      "name": "04 - Categories",
+      "name": "03 - Categories & Menu Items",
       "item": [
-        {
-          "name": "Get All Categories",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/categories", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "categories"] }
-          }
-        },
         {
           "name": "Create Category",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/categories", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "categories"] },
+            "url": { "raw": "{{baseUrl}}/categories/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["categories", "restaurants", "{{restaurantId}}"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Starters & Appetizers\",\n  \"displayOrder\": 1,\n  \"status\": \"ACTIVE\"\n}",
+              "raw": "{\n  \"name\": \"Signature Mains\",\n  \"displayOrder\": 1\n}",
               "options": { "raw": { "language": "json" } }
             }
           }
         },
         {
-          "name": "Update Category",
-          "request": {
-            "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "categories", "{{categoryId}}"] },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Gourmet Starters\",\n  \"displayOrder\": 1,\n  \"status\": \"ACTIVE\"\n}",
-              "options": { "raw": { "language": "json" } }
-            }
-          }
-        },
-        {
-          "name": "Delete Category",
-          "request": {
-            "method": "DELETE",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/categories/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "categories", "{{categoryId}}"] }
-          }
-        }
-      ]
-    },
-    {
-      "name": "05 - Menu Items",
-      "item": [
-        {
-          "name": "Get All Menu Items",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/menu-items", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "menu-items"] }
-          }
-        },
-        {
-          "name": "Create Menu Item",
+          "name": "Create Menu Item (With Badges & Macros)",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/menu-items", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "menu-items"] },
+            "url": { "raw": "{{baseUrl}}/menu-items/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["menu-items", "restaurants", "{{restaurantId}}"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"categoryId\": {{categoryId}},\n  \"name\": \"Crispy Spring Rolls\",\n  \"description\": \"Served with sweet chili sauce\",\n  \"price\": 7.99,\n  \"isAvailable\": true,\n  \"vegNonveg\": \"VEG\"\n}",
+              "raw": "{\n  \"categoryId\": 1,\n  \"name\": \"Truffle Mushroom Burger\",\n  \"description\": \"Juicy patty infused with black truffle oil\",\n  \"price\": 399.00,\n  \"vegNonveg\": \"VEG\",\n  \"isPopular\": true,\n  \"isChefSpecial\": true,\n  \"spiceLevel\": 2,\n  \"calories\": 450,\n  \"proteinGrams\": 18.5,\n  \"fatGrams\": 12.0,\n  \"carbsGrams\": 35.0,\n  \"allergens\": \"Dairy, Gluten\",\n  \"isVegan\": false,\n  \"isGlutenFree\": false,\n  \"mealType\": \"LUNCH\"\n}",
               "options": { "raw": { "language": "json" } }
             }
-          }
-        },
-        {
-          "name": "Update Menu Item",
-          "request": {
-            "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/menu-items/{{menuItemId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "menu-items", "{{menuItemId}}"] },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"categoryId\": {{categoryId}},\n  \"name\": \"Crispy Vegetable Spring Rolls\",\n  \"description\": \"Served with sweet chili dip\",\n  \"price\": 8.49,\n  \"isAvailable\": true,\n  \"vegNonveg\": \"VEG\"\n}",
-              "options": { "raw": { "language": "json" } }
-            }
-          }
-        },
-        {
-          "name": "Delete Menu Item",
-          "request": {
-            "method": "DELETE",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/menu-items/{{menuItemId}}", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "menu-items", "{{menuItemId}}"] }
           }
         }
       ]
     },
     {
-      "name": "06 - Offers",
+      "name": "04 - Offers & Discounts",
       "item": [
-        {
-          "name": "Get All Offers",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/offers", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "offers"] }
-          }
-        },
         {
           "name": "Create Offer",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/offers", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "offers"] },
+            "url": { "raw": "{{baseUrl}}/offers/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["offers", "restaurants", "{{restaurantId}}"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Weekend Special\",\n  \"description\": \"15% off on all starters\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountPercentage\": 15.00,\n  \"startDate\": \"2026-07-01\",\n  \"endDate\": \"2026-12-31\"\n}",
+              "raw": "{\n  \"title\": \"Weekend 20% Discount\",\n  \"discountPercentage\": 20.0,\n  \"startDate\": \"2026-07-01\",\n  \"endDate\": \"2026-12-31\"\n}",
               "options": { "raw": { "language": "json" } }
             }
           }
@@ -372,104 +198,218 @@
       ]
     },
     {
-      "name": "07 - QR Codes",
+      "name": "05 - QR Codes & Public Customer Flow",
       "item": [
         {
-          "name": "Get All QR Codes",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/qr-codes", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "qr-codes"] }
-          }
-        },
-        {
-          "name": "Create QR Code",
+          "name": "Generate Table QR Code",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/qr-codes", "host": ["{{baseUrl}}"], "path": ["restaurants", "{{restaurantId}}", "qr-codes"] },
+            "url": { "raw": "{{baseUrl}}/qr-codes/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["qr-codes", "restaurants", "{{restaurantId}}"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"branchId\": {{branchId}},\n  \"tableNumber\": \"Table 12\"\n}",
-              "options": { "raw": { "language": "json" } }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "08 - Public Menu Flow",
-      "item": [
-        {
-          "name": "Scan QR Token (Public)",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/public/menu/{{qrToken}}", "host": ["{{baseUrl}}"], "path": ["public", "menu", "{{qrToken}}"] }
-          }
-        },
-        {
-          "name": "Get Public Menu By Slug",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/public/menu/restaurant/{{restaurantSlug}}", "host": ["{{baseUrl}}"], "path": ["public", "menu", "restaurant", "{{restaurantSlug}}"] }
-          }
-        }
-      ]
-    },
-    {
-      "name": "09 - Super Admin & Subscriptions",
-      "item": [
-        {
-          "name": "Get Platform Stats (Super Admin)",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/super-admin/stats", "host": ["{{baseUrl}}"], "path": ["super-admin", "stats"] }
-          }
-        },
-        {
-          "name": "Update Restaurant Status (Super Admin)",
-          "request": {
-            "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/super-admin/restaurants/{{restaurantId}}/status", "host": ["{{baseUrl}}"], "path": ["super-admin", "restaurants", "{{restaurantId}}", "status"] },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+              "raw": "{\n  \"branchId\": 1,\n  \"tableNumber\": \"Table 05\"\n}",
               "options": { "raw": { "language": "json" } }
             }
           }
         },
         {
-          "name": "Activate Subscription (Super Admin)",
+          "name": "Get Public Menu (By Slug)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/public/menu/gourmet-bistro", "host": ["{{baseUrl}}"], "path": ["public", "menu", "gourmet-bistro"] }
+          }
+        },
+        {
+          "name": "Toggle Customer Favorite",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/subscriptions/restaurants/{{restaurantId}}/activate", "host": ["{{baseUrl}}"], "path": ["subscriptions", "restaurants", "{{restaurantId}}", "activate"] },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"plan\": \"PROFESSIONAL\",\n  \"months\": 12,\n  \"paymentId\": \"pay_razorpay_12345\",\n  \"paymentGateway\": \"RAZORPAY\"\n}",
-              "options": { "raw": { "language": "json" } }
-            }
+            "url": { "raw": "{{baseUrl}}/public/menu/restaurants/{{restaurantId}}/favorites/toggle?deviceToken=device-998877&menuItemId=1", "host": ["{{baseUrl}}"], "path": ["public", "menu", "restaurants", "{{restaurantId}}", "favorites", "toggle"], "query": [{ "key": "deviceToken", "value": "device-998877" }, { "key": "menuItemId", "value": "1" }] }
           }
         },
         {
-          "name": "Cancel Subscription",
+          "name": "Get Recommended Items",
           "request": {
-            "method": "POST",
-            "url": { "raw": "{{baseUrl}}/subscriptions/restaurants/{{restaurantId}}/cancel", "host": ["{{baseUrl}}"], "path": ["subscriptions", "restaurants", "{{restaurantId}}", "cancel"] }
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/public/menu/restaurants/{{restaurantId}}/recommended", "host": ["{{baseUrl}}"], "path": ["public", "menu", "restaurants", "{{restaurantId}}", "recommended"] }
           }
         }
       ]
     },
     {
-      "name": "10 - Analytics",
+      "name": "06 - Dashboard & Analytics",
       "item": [
         {
-          "name": "Get Analytics Dashboard",
+          "name": "Get Restaurant Dashboard KPIs",
           "request": {
             "method": "GET",
             "url": { "raw": "{{baseUrl}}/analytics/restaurants/{{restaurantId}}/dashboard", "host": ["{{baseUrl}}"], "path": ["analytics", "restaurants", "{{restaurantId}}", "dashboard"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Subscriptions & Billing",
+      "item": [
+        {
+          "name": "Get Subscription Usage Meter",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/subscriptions/restaurants/{{restaurantId}}/usage-meter", "host": ["{{baseUrl}}"], "path": ["subscriptions", "restaurants", "{{restaurantId}}", "usage-meter"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Media Center & Cloud Storage",
+      "item": [
+        {
+          "name": "Get Restaurant Media Gallery",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/media/restaurants/{{restaurantId}}/gallery", "host": ["{{baseUrl}}"], "path": ["media", "restaurants", "{{restaurantId}}", "gallery"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Multi-Format Reports",
+      "item": [
+        {
+          "name": "Export PDF Revenue Report",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/reports/restaurants/{{restaurantId}}/export?type=REVENUE&format=PDF", "host": ["{{baseUrl}}"], "path": ["reports", "restaurants", "{{restaurantId}}", "export"], "query": [{ "key": "type", "value": "REVENUE" }, { "key": "format", "value": "PDF" }] }
+          }
+        },
+        {
+          "name": "Export Excel Menu Report",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/reports/restaurants/{{restaurantId}}/export?type=MENU&format=EXCEL", "host": ["{{baseUrl}}"], "path": ["reports", "restaurants", "{{restaurantId}}", "export"], "query": [{ "key": "type", "value": "MENU" }, { "key": "format", "value": "EXCEL" }] }
+          }
+        },
+        {
+          "name": "Export CSV Daily Report",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/reports/restaurants/{{restaurantId}}/export?type=DAILY&format=CSV", "host": ["{{baseUrl}}"], "path": ["reports", "restaurants", "{{restaurantId}}", "export"], "query": [{ "key": "type", "value": "DAILY" }, { "key": "format", "value": "CSV" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - Notification Center",
+      "item": [
+        {
+          "name": "Get User Notifications Inbox",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/notifications", "host": ["{{baseUrl}}"], "path": ["notifications"] }
+          }
+        },
+        {
+          "name": "Get Unread Counter",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/notifications/unread-count", "host": ["{{baseUrl}}"], "path": ["notifications", "unread-count"] }
+          }
+        },
+        {
+          "name": "Mark All As Read",
+          "request": {
+            "method": "PATCH",
+            "url": { "raw": "{{baseUrl}}/notifications/read-all", "host": ["{{baseUrl}}"], "path": ["notifications", "read-all"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 - Support Ticket System ⭐",
+      "item": [
+        {
+          "name": "Create Support Ticket",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/tickets/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["tickets", "restaurants", "{{restaurantId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"QR_PROBLEM\",\n  \"priority\": \"CRITICAL\",\n  \"subject\": \"Table QR Scanner Error\",\n  \"description\": \"Table #4 QR code returns 404 when scanned on iOS devices.\",\n  \"attachments\": \"https://cdn.restaurantqr.com/error-screenshot.png\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Send Ticket Reply Message",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/tickets/1/messages", "host": ["{{baseUrl}}"], "path": ["tickets", "1", "messages"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"We have verified the table QR URL mapping.\",\n  \"isInternalNote\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Rate Support Ticket",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/tickets/1/rate?rating=5&feedback=Super%20fast%20resolution", "host": ["{{baseUrl}}"], "path": ["tickets", "1", "rate"], "query": [{ "key": "rating", "value": "5" }, { "key": "feedback", "value": "Super fast resolution" }] }
+          }
+        },
+        {
+          "name": "Search Knowledge Base FAQs",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/tickets/knowledge-base/search?q=QR", "host": ["{{baseUrl}}"], "path": ["tickets", "knowledge-base", "search"], "query": [{ "key": "q", "value": "QR" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 - Super Admin Panel & Enterprise",
+      "item": [
+        {
+          "name": "Get Super Admin Financial MRR/ARR Dashboard",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/admin/saas/dashboard", "host": ["{{baseUrl}}"], "path": ["admin", "saas", "dashboard"] }
+          }
+        },
+        {
+          "name": "Create Platform Announcement",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/admin/saas/announcements", "host": ["{{baseUrl}}"], "path": ["admin", "saas", "announcements"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Platform Maintenance Notice\",\n  \"message\": \"Scheduled database upgrade on Sunday 02:00 AM UTC.\",\n  \"targetPlan\": \"ALL\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Generate Developer API Key",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/enterprise/restaurants/{{restaurantId}}/api-keys", "host": ["{{baseUrl}}"], "path": ["enterprise", "restaurants", "{{restaurantId}}", "api-keys"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"keyName\": \"POS System Key\",\n  \"rateLimitRpm\": 1200\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Get Platform Status Page",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/enterprise/status-page", "host": ["{{baseUrl}}"], "path": ["enterprise", "status-page"] }
           }
         }
       ]
