@@ -31,7 +31,9 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = RestaurantQrApplication.class)
 @ActiveProfiles("test")
+@org.springframework.test.annotation.DirtiesContext
 class Phase7FilesAnalyticsAndAuditingTest {
+
 
     @Autowired
     private CloudinaryUploadService cloudinaryUploadService;

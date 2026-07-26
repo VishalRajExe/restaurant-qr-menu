@@ -3,8 +3,9 @@ package com.restaurantqr.platform.analytics.service;
 import com.restaurantqr.platform.analytics.dto.RestaurantDashboardResponse;
 import com.restaurantqr.platform.analytics.entity.ScanEvent;
 import com.restaurantqr.platform.analytics.entity.SearchLog;
-import com.restaurantqr.platform.analytics.entity.SearchLogRepository;
+import com.restaurantqr.platform.analytics.repository.SearchLogRepository;
 import com.restaurantqr.platform.analytics.repository.ScanEventRepository;
+
 import com.restaurantqr.platform.modules.branch.repository.BranchRepository;
 import com.restaurantqr.platform.modules.category.entity.Category;
 import com.restaurantqr.platform.modules.category.repository.CategoryRepository;

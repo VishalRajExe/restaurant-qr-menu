@@ -1,6 +1,10 @@
 -- Migration V9: Super Admin SaaS Panel & Enterprise Features (MRR/ARR, Announcements, Global Settings, API Keys, Webhooks, Custom Domains & Backups)
 
+-- 0. Ensure restaurants subscription_plan column handles long plan names (STARTER, PROFESSIONAL, BUSINESS, ENTERPRISE)
+ALTER TABLE restaurants MODIFY COLUMN subscription_plan VARCHAR(50) NOT NULL DEFAULT 'STARTER';
+
 -- 1. platform_announcements table
+
 CREATE TABLE IF NOT EXISTS platform_announcements (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,

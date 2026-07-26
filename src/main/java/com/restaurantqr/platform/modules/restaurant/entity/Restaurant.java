@@ -64,9 +64,10 @@ public class Restaurant extends BaseEntity {
     private Status status = Status.ACTIVE;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "subscription_plan", nullable = false)
+    @Column(name = "subscription_plan", nullable = false, length = 50)
     @Builder.Default
     private SubscriptionPlan subscriptionPlan = SubscriptionPlan.STARTER;
+
 
     @Column(name = "trial_ends_at")
     private java.time.LocalDateTime trialEndsAt;
