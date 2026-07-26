@@ -21,4 +21,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Page<Restaurant> findAllActive(String search, Pageable pageable);
 
     long countByIsDeletedFalse();
+
+    long countByStatusAndIsDeletedFalse(Restaurant.Status status);
+
+    long countByIsTrialTrueAndIsDeletedFalse();
 }
+

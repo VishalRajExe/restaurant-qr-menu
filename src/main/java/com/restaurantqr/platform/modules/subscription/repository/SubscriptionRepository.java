@@ -24,4 +24,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     @Query("SELECT s FROM Subscription s WHERE s.status = 'ACTIVE' " +
            "AND s.endDate BETWEEN :today AND :expiryDate")
     List<Subscription> findExpiringSoon(LocalDate today, LocalDate expiryDate);
+
+    @Query("SELECT COALESCE(SUM(s.amountPaid), 0) FROM Subscription s WHERE s.status = 'ACTIVE' AND s.isDeleted = false")
+    java.math.BigDecimal calculateMonthlyRecurringRevenue();
 }
+
