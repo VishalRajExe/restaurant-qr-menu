@@ -37,4 +37,24 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
     @Query("SELECT m FROM MenuItem m WHERE m.restaurant.id = :restaurantId " +
            "AND m.isFeatured = true AND m.isDeleted = false AND m.status = 'ACTIVE'")
     List<MenuItem> findFeaturedByRestaurantId(Long restaurantId);
+
+    @Query("SELECT m FROM MenuItem m WHERE m.restaurant.id = :restaurantId " +
+           "AND (m.isFeatured = true OR m.isPopular = true OR m.isChefSpecial = true) " +
+           "AND m.isDeleted = false AND m.status = 'ACTIVE'")
+    List<MenuItem> findRecommendedByRestaurantId(Long restaurantId);
+
+    @Query("SELECT m FROM MenuItem m WHERE m.restaurant.id = :restaurantId " +
+           "AND m.isDeleted = false AND m.status = 'ACTIVE' " +
+           "ORDER BY m.createdAt DESC")
+    List<MenuItem> findRecentlyAddedByRestaurantId(Long restaurantId);
+
+    @Query("SELECT m FROM MenuItem m WHERE m.restaurant.id = :restaurantId " +
+           "AND m.isCombo = true AND m.isDeleted = false AND m.status = 'ACTIVE'")
+    List<MenuItem> findCombosByRestaurantId(Long restaurantId);
+
+    @Query("SELECT m FROM MenuItem m WHERE m.restaurant.id = :restaurantId " +
+           "AND m.category.id = :categoryId AND m.id <> :excludeItemId " +
+           "AND m.isDeleted = false AND m.status = 'ACTIVE'")
+    List<MenuItem> findRelatedItems(Long restaurantId, Long categoryId, Long excludeItemId);
 }
+

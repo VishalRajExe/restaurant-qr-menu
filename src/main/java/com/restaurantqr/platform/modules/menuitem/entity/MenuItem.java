@@ -58,8 +58,63 @@ public class MenuItem extends BaseEntity {
     @Builder.Default
     private Boolean isFeatured = false;
 
+    @Column(name = "is_popular", nullable = false)
+    @Builder.Default
+    private Boolean isPopular = false;
+
+    @Column(name = "is_chef_special", nullable = false)
+    @Builder.Default
+    private Boolean isChefSpecial = false;
+
+    @Column(name = "spice_level")
+    @Builder.Default
+    private Integer spiceLevel = 0;
+
     @Column(name = "calories")
     private Integer calories;
+
+    @Column(name = "protein_grams", precision = 6, scale = 2)
+    @Builder.Default
+    private BigDecimal proteinGrams = BigDecimal.ZERO;
+
+    @Column(name = "fat_grams", precision = 6, scale = 2)
+    @Builder.Default
+    private BigDecimal fatGrams = BigDecimal.ZERO;
+
+    @Column(name = "carbs_grams", precision = 6, scale = 2)
+    @Builder.Default
+    private BigDecimal carbsGrams = BigDecimal.ZERO;
+
+    @Column(name = "allergens")
+    private String allergens;
+
+    @Column(name = "is_vegan", nullable = false)
+    @Builder.Default
+    private Boolean isVegan = false;
+
+    @Column(name = "is_halal", nullable = false)
+    @Builder.Default
+    private Boolean isHalal = false;
+
+    @Column(name = "is_jain", nullable = false)
+    @Builder.Default
+    private Boolean isJain = false;
+
+    @Column(name = "is_gluten_free", nullable = false)
+    @Builder.Default
+    private Boolean isGlutenFree = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "meal_type", nullable = false, length = 20)
+    @Builder.Default
+    private MealType mealType = MealType.ALL_DAY;
+
+    @Column(name = "is_combo", nullable = false)
+    @Builder.Default
+    private Boolean isCombo = false;
+
+    @Column(name = "combo_description", columnDefinition = "TEXT")
+    private String comboDescription;
 
     @Column(name = "prep_time_minutes")
     private Integer prepTimeMinutes;
@@ -77,5 +132,7 @@ public class MenuItem extends BaseEntity {
     private Status status = Status.ACTIVE;
 
     public enum FoodType { VEG, NON_VEG, EGG, VEGAN }
+    public enum MealType { BREAKFAST, LUNCH, DINNER, ALL_DAY }
     public enum Status { ACTIVE, INACTIVE }
 }
+

@@ -99,6 +99,45 @@ public class PublicMenuController {
         return ResponseEntity.ok(ApiResponse.success(menuItemService.searchPublicMenu(restaurantId, q, vegNonveg)));
     }
 
+    @GetMapping("/restaurants/{restaurantId}/recommended")
+    public ResponseEntity<ApiResponse<List<MenuItem>>> getRecommended(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(ApiResponse.success(menuItemService.getRecommended(restaurantId)));
+    }
+
+    @GetMapping("/restaurants/{restaurantId}/recently-added")
+    public ResponseEntity<ApiResponse<List<MenuItem>>> getRecentlyAdded(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(ApiResponse.success(menuItemService.getRecentlyAdded(restaurantId)));
+    }
+
+    @GetMapping("/restaurants/{restaurantId}/combos")
+    public ResponseEntity<ApiResponse<List<MenuItem>>> getCombos(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(ApiResponse.success(menuItemService.getCombos(restaurantId)));
+    }
+
+    @GetMapping("/restaurants/{restaurantId}/items/{itemId}/related")
+    public ResponseEntity<ApiResponse<List<MenuItem>>> getRelatedItems(
+            @PathVariable Long restaurantId,
+            @PathVariable Long itemId) {
+        return ResponseEntity.ok(ApiResponse.success(menuItemService.getRelatedItems(restaurantId, itemId)));
+    }
+
+    @PostMapping("/restaurants/{restaurantId}/favorites/toggle")
+    public ResponseEntity<ApiResponse<Boolean>> toggleFavorite(
+            @PathVariable Long restaurantId,
+            @RequestParam String deviceToken,
+            @RequestParam Long menuItemId) {
+        boolean isFav = menuItemService.toggleFavorite(deviceToken, restaurantId, menuItemId);
+        return ResponseEntity.ok(ApiResponse.success(isFav ? "Added to favorites" : "Removed from favorites", isFav));
+    }
+
+    @GetMapping("/restaurants/{restaurantId}/favorites")
+    public ResponseEntity<ApiResponse<List<MenuItem>>> getFavorites(
+            @PathVariable Long restaurantId,
+            @RequestParam String deviceToken) {
+        return ResponseEntity.ok(ApiResponse.success(menuItemService.getFavorites(deviceToken, restaurantId)));
+    }
+
+
 
     // ─── Response Payload
     @Data

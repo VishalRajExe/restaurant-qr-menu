@@ -24,6 +24,7 @@ public class MenuItemService {
     private final CategoryRepository categoryRepository;
     private final RestaurantService restaurantService;
     private final com.restaurantqr.platform.audit.service.AuditLogService auditLogService;
+    private final com.restaurantqr.platform.modules.menuitem.repository.CustomerFavoriteRepository customerFavoriteRepository;
 
     // ─── Public menu (no auth) ────────────────────────────────────────────────
 
@@ -41,6 +42,53 @@ public class MenuItemService {
         return page.getContent();
     }
 
+    public List<MenuItem> getRecommended(Long restaurantId) {
+        return menuItemRepository.findRecommendedByRestaurantId(restaurantId);
+    }
+
+    public List<MenuItem> getRecentlyAdded(Long restaurantId) {
+        return menuItemRepository.findRecentlyAddedByRestaurantId(restaurantId);
+    }
+
+    public List<MenuItem> getCombos(Long restaurantId) {
+        return menuItemRepository.findCombosByRestaurantId(restaurantId);
+    }
+
+    public List<MenuItem> getRelatedItems(Long restaurantId, Long itemId) {
+        MenuItem item = findByIdAndRestaurant(itemId, restaurantId);
+        return menuItemRepository.findRelatedItems(restaurantId, item.getCategory().getId(), itemId);
+    }
+
+    @Transactional
+    public boolean toggleFavorite(String deviceToken, Long restaurantId, Long menuItemId) {
+        var existing = customerFavoriteRepository.findByDeviceTokenAndMenuItemId(deviceToken, menuItemId);
+        if (existing.isPresent()) {
+            var fav = existing.get();
+            if (Boolean.TRUE.equals(fav.getIsDeleted())) {
+                fav.setIsDeleted(false);
+                customerFavoriteRepository.save(fav);
+                return true;
+            } else {
+                fav.setIsDeleted(true);
+                customerFavoriteRepository.save(fav);
+                return false;
+            }
+        } else {
+            var restaurant = restaurantService.findById(restaurantId);
+            var menuItem = findByIdAndRestaurant(menuItemId, restaurantId);
+            var fav = com.restaurantqr.platform.modules.menuitem.entity.CustomerFavorite.builder()
+                    .deviceToken(deviceToken)
+                    .restaurant(restaurant)
+                    .menuItem(menuItem)
+                    .build();
+            customerFavoriteRepository.save(fav);
+            return true;
+        }
+    }
+
+    public List<MenuItem> getFavorites(String deviceToken, Long restaurantId) {
+        return customerFavoriteRepository.findFavoritesByDeviceTokenAndRestaurant(deviceToken, restaurantId);
+    }
 
     // ─── Admin CRUD ───────────────────────────────────────────────────────────
 
@@ -62,7 +110,21 @@ public class MenuItemService {
                 .vegNonveg(request.vegNonveg != null ? request.vegNonveg : MenuItem.FoodType.NON_VEG)
                 .isAvailable(request.isAvailable != null ? request.isAvailable : true)
                 .isFeatured(request.isFeatured != null ? request.isFeatured : false)
+                .isPopular(request.isPopular != null ? request.isPopular : false)
+                .isChefSpecial(request.isChefSpecial != null ? request.isChefSpecial : false)
+                .spiceLevel(request.spiceLevel != null ? request.spiceLevel : 0)
                 .calories(request.calories)
+                .proteinGrams(request.proteinGrams != null ? request.proteinGrams : BigDecimal.ZERO)
+                .fatGrams(request.fatGrams != null ? request.fatGrams : BigDecimal.ZERO)
+                .carbsGrams(request.carbsGrams != null ? request.carbsGrams : BigDecimal.ZERO)
+                .allergens(request.allergens)
+                .isVegan(request.isVegan != null ? request.isVegan : false)
+                .isHalal(request.isHalal != null ? request.isHalal : false)
+                .isJain(request.isJain != null ? request.isJain : false)
+                .isGlutenFree(request.isGlutenFree != null ? request.isGlutenFree : false)
+                .mealType(request.mealType != null ? request.mealType : MenuItem.MealType.ALL_DAY)
+                .isCombo(request.isCombo != null ? request.isCombo : false)
+                .comboDescription(request.comboDescription)
                 .prepTimeMinutes(request.prepTimeMinutes)
                 .displayOrder(request.displayOrder != null ? request.displayOrder : 0)
                 .tags(request.tags)
@@ -93,10 +155,25 @@ public class MenuItemService {
         item.setVegNonveg(request.vegNonveg);
         if (request.isAvailable != null) item.setIsAvailable(request.isAvailable);
         if (request.isFeatured != null) item.setIsFeatured(request.isFeatured);
+        if (request.isPopular != null) item.setIsPopular(request.isPopular);
+        if (request.isChefSpecial != null) item.setIsChefSpecial(request.isChefSpecial);
+        if (request.spiceLevel != null) item.setSpiceLevel(request.spiceLevel);
         item.setCalories(request.calories);
+        if (request.proteinGrams != null) item.setProteinGrams(request.proteinGrams);
+        if (request.fatGrams != null) item.setFatGrams(request.fatGrams);
+        if (request.carbsGrams != null) item.setCarbsGrams(request.carbsGrams);
+        item.setAllergens(request.allergens);
+        if (request.isVegan != null) item.setIsVegan(request.isVegan);
+        if (request.isHalal != null) item.setIsHalal(request.isHalal);
+        if (request.isJain != null) item.setIsJain(request.isJain);
+        if (request.isGlutenFree != null) item.setIsGlutenFree(request.isGlutenFree);
+        if (request.mealType != null) item.setMealType(request.mealType);
+        if (request.isCombo != null) item.setIsCombo(request.isCombo);
+        item.setComboDescription(request.comboDescription);
         item.setPrepTimeMinutes(request.prepTimeMinutes);
         if (request.displayOrder != null) item.setDisplayOrder(request.displayOrder);
         item.setTags(request.tags);
+
 
         MenuItem updated = menuItemRepository.save(item);
 

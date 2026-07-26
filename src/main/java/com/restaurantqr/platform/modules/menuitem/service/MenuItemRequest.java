@@ -30,8 +30,23 @@ public class MenuItemRequest {
 
     public Boolean isAvailable;
     public Boolean isFeatured;
+    public Boolean isPopular;
+    public Boolean isChefSpecial;
+    public Integer spiceLevel;
     public Integer calories;
+    public BigDecimal proteinGrams;
+    public BigDecimal fatGrams;
+    public BigDecimal carbsGrams;
+    public String allergens;
+    public Boolean isVegan;
+    public Boolean isHalal;
+    public Boolean isJain;
+    public Boolean isGlutenFree;
+    public MenuItem.MealType mealType;
+    public Boolean isCombo;
+    public String comboDescription;
     public Integer prepTimeMinutes;
     public Integer displayOrder;
     public String tags;
 }
+
