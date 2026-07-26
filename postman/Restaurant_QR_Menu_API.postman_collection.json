@@ -190,7 +190,8 @@
             "url": { "raw": "{{baseUrl}}/offers/restaurants/{{restaurantId}}", "host": ["{{baseUrl}}"], "path": ["offers", "restaurants", "{{restaurantId}}"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Weekend 20% Discount\",\n  \"discountPercentage\": 20.0,\n  \"startDate\": \"2026-07-01\",\n  \"endDate\": \"2026-12-31\"\n}",
+              "raw": "{\n  \"title\": \"Weekend 20% Discount\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountPercentage\": 20.0,\n  \"startDate\": \"2026-07-01\",\n  \"endDate\": \"2026-12-31\"\n}",
+
               "options": { "raw": { "language": "json" } }
             }
           }

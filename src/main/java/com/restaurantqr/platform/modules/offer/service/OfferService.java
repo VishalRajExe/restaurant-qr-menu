@@ -86,6 +86,15 @@ public class OfferService {
     }
 
     private void validateOfferRequest(OfferRequest request) {
+        if (request.discountType == null) {
+            if (request.discountPercentage != null) {
+                request.discountType = Offer.DiscountType.PERCENTAGE;
+            } else if (request.discountAmount != null) {
+                request.discountType = Offer.DiscountType.FLAT;
+            } else {
+                request.discountType = Offer.DiscountType.PERCENTAGE;
+            }
+        }
         if (request.endDate != null && request.startDate != null && request.endDate.isBefore(request.startDate)) {
             throw new com.restaurantqr.platform.common.BadRequestException("End date cannot be before start date");
         }
@@ -99,6 +108,7 @@ public class OfferService {
             }
         }
     }
+
 
     @Transactional
     public void updateBanner(Long id, Long restaurantId, String bannerUrl) {
