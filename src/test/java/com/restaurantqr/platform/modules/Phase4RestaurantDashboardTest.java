@@ -35,8 +35,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = RestaurantQrApplication.class)
 @ActiveProfiles("test")
+@org.springframework.test.annotation.DirtiesContext(classMode = org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_CLASS)
 @Transactional
 class Phase4RestaurantDashboardTest {
+
 
     @Autowired
     private RestaurantService restaurantService;

@@ -101,7 +101,12 @@ public class QrCodeService {
         return qrCodeRepository.save(qrCode);
     }
 
+    public java.util.Optional<QrCode> findByToken(String token) {
+        return qrCodeRepository.findByToken(token);
+    }
+
     // ─── CRUD ─────────────────────────────────────────────────────────────────
+
 
     public QrCode findById(Long id, Long restaurantId) {
         restaurantService.findById(restaurantId);

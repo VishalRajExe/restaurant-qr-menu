@@ -40,18 +40,33 @@ public class PublicMenuController {
             @PathVariable String token,
             HttpServletRequest request) {
 
-        // 1. Resolve & validate QR code
-        QrCode qrCode = qrCodeService.scan(token);
-        Restaurant restaurant = qrCode.getRestaurant();
+        // 1. Try resolving as QR code token first
+        Restaurant restaurant = null;
+        QrCode qrCode = null;
+        try {
+            qrCode = qrCodeService.scan(token);
+            restaurant = qrCode.getRestaurant();
+            analyticsService.recordScan(qrCode, request);
+        } catch (Exception e) {
+            // Fallback: Try resolving as restaurant slug
+            try {
+                restaurant = restaurantService.findBySlug(token);
+            } catch (Exception ex) {
+                throw new com.restaurantqr.platform.common.ResourceNotFoundException("QR code or Restaurant not found for identifier: " + token);
+            }
+        }
+
+        if (restaurant == null) {
+            throw new com.restaurantqr.platform.common.ResourceNotFoundException("QR code or Restaurant not found for identifier: " + token);
+        }
+
+
         Long restaurantId = restaurant.getId();
 
         // 3. Fetch menu data
         List<Category> categories = categoryService.findActiveByRestaurant(restaurantId);
         List<MenuItem> menuItems = menuItemService.getPublicMenu(restaurantId);
         List<Offer> activeOffers = offerService.getActiveOffers(restaurantId);
-
-        // 4. Record scan event asynchronously (non-blocking)
-        analyticsService.recordScan(qrCode, request);
 
         // 5. Build payload
         var payload = MenuPayload.builder()
@@ -64,6 +79,7 @@ public class PublicMenuController {
 
         return ResponseEntity.ok(ApiResponse.success(payload));
     }
+
 
     // ─── Direct restaurant menu by slug (for shareable links like https://menu.yourdomain.com/r/winged-cafe)
     // GET /public/menu/restaurant/{slug}
