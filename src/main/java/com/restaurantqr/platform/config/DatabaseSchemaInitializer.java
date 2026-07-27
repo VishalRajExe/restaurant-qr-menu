@@ -24,5 +24,13 @@ public class DatabaseSchemaInitializer implements CommandLineRunner {
         } catch (Exception e) {
             log.warn("Automatic schema alter skipped or already updated: {}", e.getMessage());
         }
+
+        try {
+            jdbcTemplate.execute("ALTER TABLE support_tickets MODIFY COLUMN message TEXT NULL DEFAULT NULL");
+            log.info("Successfully updated support_tickets.message column to NULLABLE.");
+        } catch (Exception e) {
+            log.warn("Automatic support_tickets.message alter skipped: {}", e.getMessage());
+        }
+
     }
 }
