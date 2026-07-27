@@ -822,10 +822,30 @@
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "url": { "raw": "{{baseUrl}}/enterprise/webhooks", "host": ["{{baseUrl}}"], "path": ["enterprise", "webhooks"] },
+            "url": { "raw": "{{baseUrl}}/enterprise/restaurants/{{restaurantId}}/webhooks", "host": ["{{baseUrl}}"], "path": ["enterprise", "restaurants", "{{restaurantId}}", "webhooks"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"targetUrl\": \"https://api.myrestaurant.com/webhooks/qr-scans\",\n  \"eventTypes\": \"QR_SCANNED,OFFER_UPDATED\"\n}",
+              "raw": "{\n  \"targetUrl\": \"https://api.myrestaurant.com/webhooks/qr-scans\",\n  \"events\": \"QR_SCANNED,OFFER_UPDATED\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Get Webhook Subscriptions",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/enterprise/restaurants/{{restaurantId}}/webhooks", "host": ["{{baseUrl}}"], "path": ["enterprise", "restaurants", "{{restaurantId}}", "webhooks"] }
+          }
+        },
+        {
+          "name": "Configure White Label Custom Domain",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/enterprise/restaurants/{{restaurantId}}/custom-domain", "host": ["{{baseUrl}}"], "path": ["enterprise", "restaurants", "{{restaurantId}}", "custom-domain"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"domain\": \"menu.gourmetbistro.com\",\n  \"whiteLabelLogo\": \"https://cdn.gourmetbistro.com/logo.png\"\n}",
               "options": { "raw": { "language": "json" } }
             }
           }
@@ -841,9 +861,10 @@
           "name": "Trigger Disaster Recovery Backup",
           "request": {
             "method": "POST",
-            "url": { "raw": "{{baseUrl}}/enterprise/backups", "host": ["{{baseUrl}}"], "path": ["enterprise", "backups"] }
+            "url": { "raw": "{{baseUrl}}/enterprise/backups/trigger", "host": ["{{baseUrl}}"], "path": ["enterprise", "backups", "trigger"] }
           }
         }
+
       ]
     }
   ]
